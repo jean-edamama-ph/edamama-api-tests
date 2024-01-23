@@ -1,6 +1,7 @@
 import math
 
 import libraries.util.common as uCommon
+import libraries.data.testData as dTestData
 
 errorLog = []
 
@@ -69,6 +70,21 @@ class df:
         arrFilters = df.getPlpDynamicFilters(response)
         arrOptions = []
         for strOption in (responseData["data"]["filters"][arrFilters.index('Age Group')])["options"]:
+            arrOptions.append(strOption["_id"])
+        return arrOptions
+    
+    def getSearchAgeGroupFilterOptions(response):
+        """
+        Objective: Get Age Group filter options
+        
+        Params: response
+        Returns: arrOptions
+        Author: cgrapa_20230803
+        """
+        responseData = uCommon.getResponseData(response)
+        arrFilters = df.getPlpDynamicFilters(response)
+        arrOptions = []
+        for strOption in (responseData["data"]["filters"][arrFilters.index('AgeGroup')])["options"]:
             arrOptions.append(strOption["_id"])
         return arrOptions
     
@@ -279,6 +295,7 @@ class fv:
                     case '1': strItemGenderName = 'Boy'
                     case '2': strItemGenderName = 'Girl'
                     case '3': strItemGenderName = 'Unisex'
+                    case '4': strItemGenderName = 'N/A'
                 uCommon.validateText(strGenderId, strItemGenderId, f'Item "{strItemName}" with "{strItemGenderName}" found on applied Gender filter: {strGenderName}')
             except AssertionError as strError:
                 errorLog.append(f'\n[GENDER FILTER] ISSUE: {strError}')
@@ -363,8 +380,10 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             strItemCreationDate = strItem["createdAt"]
-            arrCreationDates.append(strItemCreationDate)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrCreationDates.append(strItemCreationDate)
+                arrItemNames.append(strItemName)
         dictData = {"arrCreationDates": arrCreationDates, "arrItemNames": arrItemNames}
         return dictData
     
@@ -383,8 +402,10 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             intItemPrice = (strItem["productDisplay"][0])["finalDiscountedPrice"]
-            arrPrices.append(intItemPrice)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrPrices.append(intItemPrice)
+                arrItemNames.append(strItemName)
         dictData = {"arrPrices": arrPrices, "arrItemNames": arrItemNames}
         return dictData
 
@@ -403,8 +424,10 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             intItemPrice = (strItem["productDisplay"][0])["finalDiscountedPrice"]
-            arrPrices.append(intItemPrice)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrPrices.append(intItemPrice)
+                arrItemNames.append(strItemName)
         dictData = {"arrPrices": arrPrices, "arrItemNames": arrItemNames}
         return dictData
     
@@ -423,8 +446,10 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             intItemNumberOfOrders = strItem["noOfOrders"]
-            arrNumberOfOrders.append(intItemNumberOfOrders)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrNumberOfOrders.append(intItemNumberOfOrders)
+                arrItemNames.append(strItemName)
         dictData = {"arrNumberOfOrders": arrNumberOfOrders, "arrItemNames": arrItemNames}
         return dictData
     
@@ -443,8 +468,10 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             intItemDiscount = (strItem["productDisplay"][0])["discountPercentage"]
-            arrDiscounts.append(intItemDiscount)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrDiscounts.append(intItemDiscount)
+                arrItemNames.append(strItemName)
         dictData = {"arrDiscounts": arrDiscounts, "arrItemNames": arrItemNames}
         return dictData
     
@@ -463,9 +490,33 @@ class sr:
         for strItem in arrItems:
             strItemName = strItem["name"]
             strModifiedDate = strItem["lastModifiedAt"]
-            arrModifiedDates.append(strModifiedDate)
-            arrItemNames.append(strItemName)
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrModifiedDates.append(strModifiedDate)
+                arrItemNames.append(strItemName)
         dictData = {"arrModifiedDates": arrModifiedDates, "arrItemNames": arrItemNames}
+        return dictData
+    
+    def getSearchScore(response):
+        """
+        Objective: Get item Search Scores
+        
+        Params: response
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        responseData = uCommon.getResponseData(response)
+        arrItems = (responseData["data"])["products"]
+        arrSearchScores = []
+        arrItemNames = []
+        for strItem in arrItems:
+            strItemName = strItem["name"]
+            strItemScore = strItem["score"]
+            intItemQuantity = (strItem["productDisplay"][0])["quantity"]
+            if intItemQuantity > 0:
+                arrSearchScores.append(strItemScore)
+                arrItemNames.append(strItemName)
+        dictData = {"arrSearchScores": arrSearchScores, "arrItemNames": arrItemNames}
         return dictData
 
 
@@ -598,4 +649,344 @@ class sv:
                 assert strModifiedDate == arrSortedModifiedDates[intIndex], f'Item "{arrItemNames[intIndex]}" with Modification Date "{strModifiedDate}" should be in rank {intCorrectRank} instead of {intIncorrectRank} | Page: {intPage}'
             except AssertionError as strError:
                 errorLog.append(f'\n[LAST UPDATED SORTING] ISSUE: {strError}')
+                uCommon.errorCounter()
+    
+    def validateSortingByRelevance(response, intPage):
+        """
+        Objective: Validate item sorting by Last Updated
+        
+        Params: response | intPage
+        Returns: None
+        Author: cgrapa_20230803
+        """
+        dictData = sr.getSearchScore(response)
+        arrSearchScores = dictData["arrSearchScores"]
+        arrItemNames = dictData["arrItemNames"]
+        arrSortedSearchScores = uCommon.sortArray(arrSearchScores)
+        for intIndex, strModifiedDate in enumerate(arrSortedSearchScores):
+            try:
+                intCorrectRank = arrSortedSearchScores.index(strModifiedDate) + 1
+                intIncorrectRank = intIndex + 1
+                assert strModifiedDate == arrSortedSearchScores[intIndex], f'Item "{arrItemNames[intIndex]}" with Search Score: "{strModifiedDate}" should be in rank {intCorrectRank} instead of {intIncorrectRank} | Page: {intPage}'
+            except AssertionError as strError:
+                errorLog.append(f'\n[LAST UPDATED SORTING] ISSUE: {strError}')
+                uCommon.errorCounter()
+
+
+
+
+
+class src:
+    """SEARCH"""
+    
+    def getSearchResults(response):
+        """
+        Objective: Compile Search Result Attributes
+        
+        Params: response
+        Returns: arrItemNames
+        Author: cgrapa_20231123
+        """
+        responseData = uCommon.getResponseData(response)
+        arrItems = (responseData["data"])["products"]
+        arrItemNames = []
+        for strItem in arrItems:
+            arrColors = []
+            strItemName = strItem["name"]
+            strBrandName = (strItem["brand"])["name"]
+            strCategoryName = (strItem["category"][0])["name"]
+            for strColor in strItem["color"]:
+                arrColors.append(strColor["name"])
+            strDescription = strItem["description"]
+            dictData = {"strItemName": strItemName, "strBrandName": strBrandName, "strCategoryName": strCategoryName, "arrColors": arrColors, "strDescription": strDescription}
+            arrItemNames.append(dictData)
+        return arrItemNames
+
+
+
+
+
+class srv:
+    """SEARCH RESULTS VALIDATION"""
+    
+    def validateSearchTermInAttributes(strAttributeValue, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Compile Search Result Attributes
+        
+        Params: response
+        Returns: boolean
+        Author: cgrapa_20230803
+        """
+        if blnPhrase == False:
+            strCleanAttributeValue = uCommon.cleanPunctuations(strAttributeValue)
+            arrAttributeValue = uCommon.splitPhraseToWords(strCleanAttributeValue)
+            if strSearchTerm.casefold() not in [strValue.casefold() for strValue in arrAttributeValue]:
+                return False
+            else:
+                return True
+        else:
+            arrSearchTermWords = uCommon.splitPhraseToWords(strSearchTerm)
+            blnExists = any(strSearchTermWord.casefold() in strAttributeValue.casefold() for strSearchTermWord in arrSearchTermWords)
+            if blnExists == False:
+                return False
+            else:
+                return True
+
+    def validateSearchTermInColors(arrColors, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Validate if PLP items contains the search term in every color
+        
+        Params: arrColors | strSearchTerm | blnPhrase
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        blnInColorName = False
+        for strColorName in arrColors:
+            if blnPhrase == False:
+                blnInColors = srv.validateSearchTermInAttributes(strColorName, strSearchTerm)
+            else:
+                blnInColors = srv.validateSearchTermInAttributes(strColorName, strSearchTerm, blnPhrase)
+            if blnInColors == True:
+                blnInColorName = blnInColors
+                break
+        return blnInColorName
+    
+    def validateItems(strItem, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Validate if PLP items contains the search term
+        
+        Params: strItem | strSearchTerm | blnPhrase
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        strItemName = strItem["strItemName"]
+        strBrandName = strItem["strBrandName"]
+        strCategoryName = strItem["strCategoryName"]
+        strDescription = strItem["strDescription"]
+        arrColors = strItem["arrColors"]
+        if blnPhrase == False:
+            blnInItemName = srv.validateSearchTermInAttributes(strItemName, strSearchTerm)
+            blnInBrandName = srv.validateSearchTermInAttributes(strBrandName, strSearchTerm)
+            blnInCategoryName = srv.validateSearchTermInAttributes(strCategoryName, strSearchTerm)
+            blnInDescription = srv.validateSearchTermInAttributes(strDescription, strSearchTerm)
+            blnInColorName = srv.validateSearchTermInColors(arrColors, strSearchTerm)
+        else:
+            blnInItemName = srv.validateSearchTermInAttributes(strItemName, strSearchTerm, blnPhrase)
+            blnInBrandName = srv.validateSearchTermInAttributes(strBrandName, strSearchTerm, blnPhrase)
+            blnInCategoryName = srv.validateSearchTermInAttributes(strCategoryName, strSearchTerm, blnPhrase)
+            blnInDescription = srv.validateSearchTermInAttributes(strDescription, strSearchTerm, blnPhrase)
+            blnInColorName = srv.validateSearchTermInColors(arrColors, strSearchTerm, blnPhrase)
+        arrHits = [blnInItemName, blnInBrandName, blnInCategoryName, blnInColorName, blnInDescription]
+        return any(blnHits == True for blnHits in arrHits)
+    
+    def validateCharacterChangeCondition(strSearchTerm):
+        intSearchTermCharacterCount = uCommon.getArrayCount(strSearchTerm)
+        if intSearchTermCharacterCount >= 8 and intSearchTermCharacterCount <= 29:
+            return 1
+        elif intSearchTermCharacterCount > 29:
+            return 2
+        else:
+            return 0
+    
+    def validateTypoApplied(strSearchTerm, strAttributeWord):
+        """
+        Objective: Validate if typo is applied
+        
+        Params: strSearchTerm | strAttributeWord
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        intAllowedCharacterChange = srv.validateCharacterChangeCondition(strSearchTerm)
+        intAddedSubtractedCharacter = abs(len(strSearchTerm) - len(strAttributeWord))
+        strAttributeLower = strAttributeWord.lower()
+        intCount = intAddedSubtractedCharacter
+        if strAttributeLower.startswith(strSearchTerm[0]) and len(strSearchTerm) == len(strAttributeWord):
+            for index in range(len(strSearchTerm)):
+                if strSearchTerm[index] != strAttributeLower[index]:
+                    intCount +=1
+        elif strAttributeLower.startswith(strSearchTerm[0]) and intAllowedCharacterChange == intAddedSubtractedCharacter:
+            intMinLength = min(len(strSearchTerm), len(strAttributeLower))
+            for index in range(intMinLength):
+                if strSearchTerm[index] != strAttributeLower[index]:
+                    intCount += 1
+        if intCount <= intAllowedCharacterChange:
+            return True
+        else:
+            return False
+
+    def validateTypoConditions(strAttributeValue, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Validate typo conditions
+        
+        Params: strAttributeValue | strSearchTerm | blnPhrase
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        strCleanValue = uCommon.cleanPunctuations(strAttributeValue)
+        arrItemWords = uCommon.splitPhraseToWords(strCleanValue)
+        blnTypoApplied = False
+        if blnPhrase == False:
+            for strItemWord in arrItemWords:
+                blnTypoHit = srv.validateTypoApplied(strSearchTerm, strItemWord)
+                if blnTypoHit == True:
+                    blnTypoApplied = True
+                    break
+            return blnTypoApplied
+        else:
+            arrSearchTermWords = uCommon.splitPhraseToWords(strSearchTerm)
+            arrPhraseHits = []
+            for strSearchTermWord in arrSearchTermWords:
+                for strItemWord in arrItemWords:
+                    blnTypoHit = srv.validateTypoApplied(strSearchTermWord, strItemWord)
+                    if blnTypoHit == True:
+                        blnTypoApplied = True
+                        arrPhraseHits.append(blnTypoApplied)
+            return any(blnHits == True for blnHits in arrPhraseHits)
+    
+    def validateColorsTypoConditions(arrColors, strSearchTerm):
+        """
+        Objective: Validate attributes through Typo - Color Attribute
+        
+        Params: arrColors | strSearchTerm
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        for strColorName in arrColors:
+            strCleanName = uCommon.cleanPunctuations(strColorName)
+            arrItemWords = uCommon.splitPhraseToWords(strCleanName)
+            blnTypoApplied = False
+            for strItemWord in arrItemWords:
+                strItemWordLower = strItemWord.lower()
+                if len(strItemWord) == len(strSearchTerm) and strItemWordLower.startswith(strSearchTerm[0]):
+                    blnTypoApplied = True
+                    break                
+        return blnTypoApplied
+    
+    def validateTypo(strItem, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Validate attributes through Typo
+        
+        Params: strItem | strSearchTerm | blnPhrase
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        strItemName = strItem["strItemName"]
+        strBrandName = strItem["strBrandName"]
+        strCategoryName = strItem["strCategoryName"]
+        arrColors = strItem["arrColors"]
+        if blnPhrase == False:
+            blnTypoInNameApplied = srv.validateTypoConditions(strItemName, strSearchTerm)
+            blnTypoInBrandNameApplied = srv.validateTypoConditions(strBrandName, strSearchTerm)
+            blnTypoInCategoryNameApplied = srv.validateTypoConditions(strCategoryName, strSearchTerm)
+            blnTypoInColorNameApplied = srv.validateColorsTypoConditions(arrColors, strSearchTerm)
+        else:
+            blnTypoInNameApplied = srv.validateTypoConditions(strItemName, strSearchTerm, blnPhrase)
+            blnTypoInBrandNameApplied = srv.validateTypoConditions(strBrandName, strSearchTerm, blnPhrase)
+            blnTypoInCategoryNameApplied = srv.validateTypoConditions(strCategoryName, strSearchTerm, blnPhrase)
+            blnTypoInColorNameApplied = srv.validateColorsTypoConditions(arrColors, strSearchTerm)
+        arrHits = [blnTypoInNameApplied, blnTypoInBrandNameApplied, blnTypoInCategoryNameApplied, blnTypoInColorNameApplied]
+        return any(blnHits == True for blnHits in arrHits)
+    
+    def validateOneWaySynonymMatch(strItem, arrSynonyms):
+        """
+        Objective: Validate attributes through One Way Synonym Match
+        
+        Params: strSearchTerm
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        arrItemWords = uCommon.splitPhraseToWords(strItem)
+        blnSynonymMatch = False
+        for strItemWord in arrItemWords:
+            if strItemWord in arrSynonyms:
+                blnSynonymMatch = True
+        return blnSynonymMatch
+    
+    def getSynonymSetIndex(strSearchTerm):
+        """
+        Objective: Get synonym index from Two Way Synonym Set of words
+        
+        Params: strSearchTerm
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        arrSynonymSets = dTestData.plp.src.synonym
+        for arrSynonymSet in arrSynonymSets:
+            for key, values in arrSynonymSet.items():
+                if strSearchTerm.lower() in values:
+                    strSetNumber = key
+                else:
+                    strSetNumber = None
+        return strSetNumber
+        
+    def validateTwoWaySynonymMatch(strItem, strSearchTerm):
+        """
+        Objective: Validate attributes through Two Way Synonym Match
+        
+        Params: strItem | strSearchTerm
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        strCleanValue = uCommon.cleanPunctuations(strItem)
+        arrItemWords = uCommon.splitPhraseToWords(strCleanValue)
+        strKey = srv.getSynonymSetIndex(strSearchTerm)
+        arrSynonymSets = dTestData.plp.src.synonym
+        blnSynonymMatch = False
+        if strKey is not None:
+            for strItemWord in arrItemWords:
+                if strItemWord.lower() in arrSynonymSets[0][strKey]:
+                    blnSynonymMatch = True
+                    break
+            return blnSynonymMatch
+        else:
+            return blnSynonymMatch
+    
+    def validateSynonyms(strItem, strSearchTerm, blnPhrase):
+        """
+        Objective: Validate attributes through Synonyms
+        
+        Params: strItem | strSearchTerm
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        strItemName = strItem["strItemName"]
+        strBrandName = strItem["strBrandName"]
+        strCategoryName = strItem["strCategoryName"]
+        arrOneWaySynonyms = dTestData.plp.src.oneWaySynonyms
+        for strOneWaySynonym in arrOneWaySynonyms:
+            if strOneWaySynonym["input"] == strSearchTerm:
+                arrSynonyms = strOneWaySynonym["synonyms"]
+                break
+            else:
+                arrSynonyms = []
+        if arrSynonyms != []:
+            blnItemNameMatch = srv.validateOneWaySynonymMatch(strItemName, arrSynonyms)
+            blnBrandNameMatch = srv.validateOneWaySynonymMatch(strBrandName, arrSynonyms)
+            blnCategoryNameMatch = srv.validateOneWaySynonymMatch(strCategoryName, arrSynonyms)
+        else:
+            blnItemNameMatch = srv.validateTwoWaySynonymMatch(strItemName, strSearchTerm)
+            blnBrandNameMatch = srv.validateTwoWaySynonymMatch(strBrandName, strSearchTerm)
+            blnCategoryNameMatch = srv.validateTwoWaySynonymMatch(strCategoryName, strSearchTerm)
+        arrHits = [blnItemNameMatch, blnBrandNameMatch, blnCategoryNameMatch]
+        return any(blnHits == True for blnHits in arrHits)
+    
+    def validateSearchResults(response, strSearchTerm, blnPhrase = False):
+        """
+        Objective: Validate Search Result Attributes
+        
+        Params: response | strSearchTerm | blnPhrase
+        Returns: None
+        Author: cgrapa_20231123
+        """
+        arrItems = src.getSearchResults(response)
+        for strItem in arrItems:
+            blnHits = srv.validateItems(strItem, strSearchTerm, blnPhrase)
+            blnSynonymHits = srv.validateSynonyms(strItem, strSearchTerm, blnPhrase)
+            blnTypoHits = srv.validateTypo(strItem, strSearchTerm, blnPhrase)
+            arrHits = [blnHits, blnSynonymHits, blnTypoHits]
+            blnNoHits = any(blnHits == True for blnHits in arrHits)
+            try:
+                assert blnNoHits == True, f'"{strItem["strItemName"]}" does not adhere to any search Algorithm (Keyword/Phrase: {blnHits} | Synonym: {blnSynonymHits} | Typo: {blnTypoHits}) | Search Term: "{strSearchTerm}"'
+            except AssertionError as strError:
+                errorLog.append(f'\n[SEARCH RESULTS] ISSUE: {strError}')
                 uCommon.errorCounter()

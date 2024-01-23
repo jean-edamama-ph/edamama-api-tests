@@ -1,0 +1,6 @@
+allure-result
+vmAPI
+__pycache__
+*-container.json
+*-result.json
+*allure-result

@@ -1,5 +1,6 @@
 class plp:
     """PRODUCT LISTING"""
+    
     def products(strCategoryId):
         return {
                 "page": 1,
@@ -124,4 +125,146 @@ class plp:
                 "sortby": intSortOption,
                 "filters": [],
                 "parentCategory": strCategoryId
+            }
+    
+    def search(strSearchTerm, intPage = 1, intSortOption = 0):
+        return {
+                "searchInput": strSearchTerm,
+                "isMobile": False,
+                "search": strSearchTerm,
+                "page": intPage,
+                "limit": 100,
+                "color": [],
+                "filter": [
+                    {
+                        "_id": "brand",
+                        "options": []
+                    },
+                    {
+                        "_id": "ageGroup",
+                        "options": []
+                    },
+                    {
+                        "_id": "gender",
+                        "options": []
+                    }
+                ],
+                "sortby": intSortOption
+            }
+    
+    def searchLimit1(strSearchTerm):
+        return {
+                "filters": [],
+                "limit": 1,
+                "page": 1,
+                "search": strSearchTerm,
+                "sortBy": 0
+            }
+    
+    def filterSearchByBrand(strSearchTerm, strBrandId, intPage = 1):
+        return {
+                "searchInput": strSearchTerm,
+                "isMobile": False,
+                "search": strSearchTerm,
+                "page": intPage,
+                "limit": 100,
+                "color": [],
+                "filter": [
+                    {
+                        "_id": "brand",
+                        "options": [
+                            strBrandId
+                        ]
+                    },
+                    {
+                        "_id": "ageGroup",
+                        "options": []
+                    },
+                    {
+                        "_id": "gender",
+                        "options": []
+                    }
+                ],
+                "sortby": "0"
+            }
+    
+    def filterSearchByGender(strSearchTerm, strGenderId, intPage = 1):
+        return {
+                "searchInput": strSearchTerm,
+                "isMobile": False,
+                "search": strSearchTerm,
+                "page": intPage,
+                "limit": 100,
+                "color": [],
+                "filter": [
+                    {
+                        "_id": "brand",
+                        "options": []
+                    },
+                    {
+                        "_id": "ageGroup",
+                        "options": []
+                    },
+                    {
+                        "_id": "gender",
+                        "options": [
+                            strGenderId
+                        ]
+                    }
+                ],
+                "sortby": "0"
+            }
+    
+    def filterSearchByAgeGroup(strSearchTerm, strGroupOption, intPage = 1):
+        return {
+                "searchInput": strSearchTerm,
+                "isMobile": False,
+                "search": strSearchTerm,
+                "page": intPage,
+                "limit": 100,
+                "color": [],
+                "filter": [
+                    {
+                        "_id": "brand",
+                        "options": []
+                    },
+                    {
+                        "_id": "ageGroup",
+                        "options": [
+                            strGroupOption
+                        ]
+                    },
+                    {
+                        "_id": "gender",
+                        "options": []
+                    }
+                ],
+                "sortby": "0"
+            }
+    
+    def filterSearchByColor(strSearchTerm, strColorName, intPage = 1):
+        return {
+                "searchInput": strSearchTerm,
+                "isMobile": False,
+                "search": strSearchTerm,
+                "page": intPage,
+                "limit": 100,
+                "color": [
+                    strColorName
+                ],
+                "filter": [
+                    {
+                        "_id": "brand",
+                        "options": []
+                    },
+                    {
+                        "_id": "ageGroup",
+                        "options": []
+                    },
+                    {
+                        "_id": "gender",
+                        "options": []
+                    }
+                ],
+                "sortby": "0"
             }

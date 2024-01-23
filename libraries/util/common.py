@@ -210,3 +210,45 @@ def joinArray(arrCollection):
     Author: cgrapa_20230803
     """
     return ', '.join(map(str, arrCollection))
+
+def cleanPunctuations(strPhrase):
+    """
+    Objective: Clear Special Characters and Punctuations
+    
+    Params: strPhrase
+    Returns: arrWords
+    Author: cgrapa_20231123
+    """
+    strPunctuations = '''!()[]{};:"\\,<>./?@#$%^&*_~'''
+    for strPunctuation in strPunctuations:
+        strPhrase = strPhrase.replace(strPunctuation, ' ')
+    return strPhrase
+
+def splitPhraseToWords(strPhrase, blnCountWords = False):
+    """
+    Objective: Splits phrases to words
+    
+    Params: strPhrase | blnCountWords
+    Returns: arrWords | len(arrWords)
+    Author: cgrapa_20231123
+    """
+    if blnCountWords == False:
+        arrWords = strPhrase.split()
+        return arrWords
+    else:
+        arrWords = strPhrase.split()
+        return len(arrWords)
+
+def countCharacterChange(strCompareWith, strCompareTo):
+    """
+    Objective: Counts the number characters changed in a word
+    
+    Params: strCompareWith | strCompareTo
+    Returns: count
+    Author: cgrapa_20231123
+    """
+    count = 0
+    for charCompareWith, charCompareTo in zip(strCompareWith, strCompareTo):
+        if charCompareWith != charCompareTo:
+            count += 1
+    return count

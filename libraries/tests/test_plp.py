@@ -1,7 +1,6 @@
 import allure, pytest
 
 import libraries.data.testData as dTestData
-
 import libraries.util.apiCall.productListing as apiProductListing
 
 @pytest.mark.api()
@@ -63,3 +62,16 @@ def test_AUTO_937_Category_Listing_Furmama():
 @allure.step('Verify if search results will be Filtered and Sorted By correctly - Beauty and Wellness')
 def test_AUTO_937_Category_Listing_Beauty_and_Wellness():
     apiProductListing.validateCategoriesPlp(dTestData.plp.beautyAndWellness)
+
+@pytest.mark.api()
+@allure.step('Verify if products displayed through search follow search result requirements including Filtering and Sorting')
+def test_AUTO_938_Atlas_Search_Results_Validation():
+    strSearchTerm = dTestData.plp.src.searchTerm
+    apiProductListing.validateSearchPlp(strSearchTerm)
+
+@pytest.mark.api()
+@allure.step('Verify if products displayed through search follow search result requirements including Filtering and Sorting - Multiple Search Terms')
+def test_AUTO_938_Atlas_Search_Filter_Validation_Multiple_Search_Terms():
+    arrTop30SearchTerms = dTestData.plp.src.top30SearchTerms
+    for strSearchTerm in arrTop30SearchTerms:
+        apiProductListing.validateSearchPlp(strSearchTerm)
