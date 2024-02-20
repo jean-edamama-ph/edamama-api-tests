@@ -269,6 +269,19 @@ class plp:
                 "sortby": "0"
             }
     
+    def filterSearchByPrice(strSearchTerm, intMin, intMax, intPage = 1):
+        return {
+                "limit": 100,
+                "page": intPage,
+                "search": strSearchTerm,
+                "color": [],
+                "filter": [],
+                "minPrice": intMin,
+                "maxPrice": intMax,
+                "sortby": 0,
+                "isMobile": False
+            }
+    
     def curatedProducts(strCuratedLname):
         return {
                 "limit":100,
@@ -307,6 +320,45 @@ class plp:
                 "sortby": 4,
                 "filters": [],
                 "productSpotlight": strId,
+                "minPrice": intMin,
+                "maxPrice": intMax
+            }
+    
+    snsProducts = {
+                "limit": 100,
+                "page": 1,
+                "sortby": 4,
+                "filters": [],
+                "productSpotlight": "subscribe"
+            }
+    
+    def filterSnsByPrice(strId, intMin, intMax, intPage = 1):
+        return {
+                "limit": 100,
+                "page": intPage,
+                "sortby": 4,
+                "filters": [],
+                "productSpotlight": strId,
+                "minPrice": intMin,
+                "maxPrice": intMax
+            }
+    
+    def brandProducts(strBrandName):
+        return {
+                "limit": 100,
+                "page": 1,
+                "sortby": 4,
+                "filters": [],
+                "brandName": strBrandName
+            }
+    
+    def filterBrandByPrice(strId, intMin, intMax, intPage = 1):
+        return {
+                "limit": 100,
+                "page": intPage,
+                "sortby": 4,
+                "filters": [],
+                "brandName": strId,
                 "minPrice": intMin,
                 "maxPrice": intMax
             }

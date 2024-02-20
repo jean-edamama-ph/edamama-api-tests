@@ -1,10 +1,8 @@
 import libraries.data.headers as dHeaders
-import libraries.data.params as dParams
 import libraries.data.payload as dPayload
 import libraries.data.testData as dTestData
 import libraries.data.url as dUrl
 import libraries.util.common as uCommon
-import libraries.util.response.categories as rCategories
 import libraries.util.response.productListing as rProductListing
 
 def postTypesProducts(strPayload):
@@ -269,6 +267,55 @@ def filterSearchByColor(response, strSearchTerm):
         validateColor(response, strSearchTerm, strColorName)
     uCommon.printErrorCount('Color Filter')
 
+def validatePrice(response, strSearchTerm, intMin, intMax):
+    """
+    Objective: Validate Items by Price
+    
+    Method: POST
+    API Endpoint: /types/products
+    Payload: limit | page | sortby | filters | minPrice | maxPrice | parentCategory
+    Author: cgrapa_20230803
+    """
+    intPages = rProductListing.plp.calculatePlpPages(response)
+    for intPage in range(intPages):
+        response = postTypesProducts(dPayload.plp.filterSearchByPrice(strSearchTerm, intMin, intMax, intPage + 1))
+        rProductListing.fv.validatePriceFilter(response, intMin, intMax)
+        rProductListing.fv.detectDuplicateProductCards(response, f'Price Filter: {intMin} - {intMax}')
+
+def filterByPrice(response, strSearchTerm, strSetMinMax = '', blnEnableIncrement = False):
+    """
+    Objective: Filter and validate items by Price
+    
+    Method: POST
+    API Endpoint: /types/products
+    Payload: limit | page | sortby | filters | minPrice | maxPrice | parentCategory
+    Author: cgrapa_20230803
+    """
+    if blnEnableIncrement == True:
+        intIncrementValue = dTestData.plp.intPriceFilterIncrement
+    else:
+        intIncrementValue = int(rProductListing.sf.getPriceFilterOptions(response))
+    match strSetMinMax:
+        case 'minOnly':
+            intMin = dTestData.plp.intPriceFilterMin
+            intBaseMaxPrice = int(rProductListing.sf.getPriceFilterOptions(response))
+            intMax = intBaseMaxPrice
+        case 'maxOnly':
+            intMin = 0
+            intMax = dTestData.plp.intPriceFilterMax
+            intBaseMaxPrice = dTestData.plp.intPriceFilterMax
+        case _:
+            intMin = dTestData.plp.intPriceFilterMin
+            intMax = dTestData.plp.intPriceFilterMax
+            intBaseMaxPrice = intMax
+    for intMin in uCommon.progressBar(range(intMin, intBaseMaxPrice, intIncrementValue), f'{strSearchTerm} | Price Filter:'):
+        intMax = intMin + intIncrementValue
+        if intMax > intBaseMaxPrice:
+            intMax = intBaseMaxPrice
+        response = postTypesProducts(dPayload.plp.filterSearchByPrice(strSearchTerm, intMin, intMax))
+        validatePrice(response, strSearchTerm, intMin, intMax)
+    uCommon.printErrorCount('Price Filter')
+
 def validateFiltersSearchPlp(strSearchTerm):
     """
     Objective: Validate Dynamic filters
@@ -297,8 +344,8 @@ def validateStaticFiltersSearchPlp(strSearchTerm):
     arrStaticFilters = rProductListing.sf.getPlpStaticFilters(response)
     for strStaticFilter in arrStaticFilters:
         match strStaticFilter:
-            case 'Color': filterSearchByColor(response, strSearchTerm)
-            #case 'Price': ##### DISABLED ON ATLAS #####
+            #case 'Color': filterSearchByColor(response, strSearchTerm)
+            case 'Price': filterByPrice(response, strSearchTerm, 'minOnly', True)
             #case 'Discount': ##### DISABLED ON ATLAS #####
 
 def validateSearchSorting(strSearchTerm):

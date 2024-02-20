@@ -1,11 +1,13 @@
 class plp:
     """PRODUCT LISTING"""
     
-    intPriceFilterMin = 500
+    intPriceFilterMin = 1
     
-    intPriceFilterIncrement = 8000
+    intPriceFilterIncrement = 250
     
-    intPriceFilterMax = 8000
+    intPriceFilterMax = 2500
+    
+    strBrand = 'Tiny Buds'
     
     diapering = {
                 "strCategoryName": "Diapering", 

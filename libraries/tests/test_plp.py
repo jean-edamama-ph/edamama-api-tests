@@ -5,6 +5,8 @@ import libraries.util.apiCall.productListing.category as apiCategory
 import libraries.util.apiCall.productListing.curated as apiCurated
 import libraries.util.apiCall.productListing.search as apiSearch
 import libraries.util.apiCall.productListing.ds as apiDs
+import libraries.util.apiCall.productListing.sns as apiSns
+import libraries.util.apiCall.productListing.brand as apiBrand
 
 @pytest.mark.api()
 @allure.step('Verify if search results will be Filtered and Sorted By correctly - Diapering')
@@ -88,3 +90,14 @@ def test_AUTO_000_Curated_Products_PLP_Validation():
 @allure.step('Verify if products displayed through DS PLPs are valid')
 def test_AUTO_000_DS_PLP_Validation():
     apiDs.validateDsPlp()
+
+@pytest.mark.api()
+@allure.step('Verify if products displayed through SNS PLPs are valid')
+def test_AUTO_000_SNS_PLP_Validation():
+    apiSns.validateSnsPlp()
+
+@pytest.mark.thisTest()
+@allure.step('Verify if products displayed through Brand Name PLPs are valid')
+def test_AUTO_000_Brand_PLP_Validation():
+    strBrand = dTestData.plp.strBrand
+    apiBrand.validateBrandPlp(strBrand)

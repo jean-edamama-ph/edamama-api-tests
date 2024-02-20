@@ -1,5 +1,4 @@
 import libraries.data.headers as dHeaders
-import libraries.data.params as dParams
 import libraries.data.payload as dPayload
 import libraries.data.testData as dTestData
 import libraries.data.url as dUrl
@@ -16,27 +15,6 @@ def postTypesProducts(strPayload):
     response = uCommon.callPostAndValidateResponse(dUrl.plp.products, dHeaders.withToken(), strPayload, dHeaders.auth)  
     return response
 
-def getSpotlightCuratedTypes():
-    """
-    Method: GET
-    API Endpoint: /shop/curated-types?
-    Params: forSpotlight
-    Response Data: lName | title
-    Author: cgrapa_20240220
-    """
-    response = uCommon.callGetAndValidateResponse(dUrl.plp.getCuratedTypes, dHeaders.withToken(), dParams.curatedTypesSpotlight, dHeaders.auth)
-    return response
-
-def postCuratedTypesProducts(strPayload):
-    """
-    Method: POST
-    API Endpoint: /types/products
-    Payload: page | sortby | filters | parentCategory | limit
-    Author: cgrapa_20230713
-    """
-    response = uCommon.callPostAndValidateResponse(dUrl.plp.curatedTypesProducts, dHeaders.withToken(), strPayload, dHeaders.auth)  
-    return response
-
 def validatePrice(response, strId, intMin, intMax):
     """
     Objective: Validate Items by Price
@@ -48,7 +26,7 @@ def validatePrice(response, strId, intMin, intMax):
     """
     intPages = rProductListing.plp.calculatePlpPages(response)
     for intPage in range(intPages):
-        response = postTypesProducts(dPayload.plp.filterCuratedByPrice(strId, intMin, intMax, intPage + 1))
+        response = postTypesProducts(dPayload.plp.filterBrandByPrice(strId, intMin, intMax, intPage + 1))
         rProductListing.fv.validatePriceFilter(response, intMin, intMax)
         rProductListing.fv.detectDuplicateProductCards(response, f'Price Filter: {intMin} - {intMax}')
 
@@ -78,11 +56,12 @@ def filterByPrice(response, strId, strName, strSetMinMax = '', blnEnableIncremen
             intMin = dTestData.plp.intPriceFilterMin
             intMax = dTestData.plp.intPriceFilterMax
             intBaseMaxPrice = intMax
+    print(int(rProductListing.sf.getPriceFilterOptions(response)))
     for intMin in uCommon.progressBar(range(intMin, intBaseMaxPrice, intIncrementValue), f'{strName} | Price Filter:'):
         intMax = intMin + intIncrementValue
         if intMax > intBaseMaxPrice:
             intMax = intBaseMaxPrice
-        response = postTypesProducts(dPayload.plp.filterCuratedByPrice(strId, intMin, intMax))
+        response = postTypesProducts(dPayload.plp.filterBrandByPrice(strId, intMin, intMax))
         validatePrice(response, strId, intMin, intMax)
     uCommon.printErrorCount('Price Filter')
 
@@ -97,18 +76,15 @@ def validateStaticFilters(response, strId, strName):
     arrStaticFilters = rProductListing.sf.getPlpStaticFilters(response)
     for strStatic in arrStaticFilters:
         match strStatic:
-            case 'Price': filterByPrice(response, strId, strName, 'minOnly')
+            case 'Price': filterByPrice(response, strId, strName)
 
-def validateCuratedPlp():
+def validateBrandPlp(strBrandName):
     """
-    Objective: Validate PLP through Curated Products
+    Objective: Validate PLP through Brand
     
     Params: dictCategory
     Returns: None
     Author: cgrapa_20230803
     """
-    response = getSpotlightCuratedTypes()
-    arrCuratedTypes = rProductListing.cp.getCuratedLnameAndTitles(response)
-    for dictCuratedType in arrCuratedTypes:
-        response = postCuratedTypesProducts(dPayload.plp.curatedProducts(dictCuratedType["strCuratedLname"]))
-        validateStaticFilters(response, dictCuratedType["strCuratedLname"], dictCuratedType["strCuratedTitle"])
+    response = postTypesProducts(dPayload.plp.brandProducts(strBrandName))
+    validateStaticFilters(response, strBrandName, strBrandName)

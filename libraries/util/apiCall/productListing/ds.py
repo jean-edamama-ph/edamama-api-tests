@@ -1,10 +1,8 @@
 import libraries.data.headers as dHeaders
-import libraries.data.params as dParams
 import libraries.data.payload as dPayload
 import libraries.data.testData as dTestData
 import libraries.data.url as dUrl
 import libraries.util.common as uCommon
-import libraries.util.response.categories as rCategories
 import libraries.util.response.productListing as rProductListing
 
 def postTypesProducts(strPayload):
@@ -92,7 +90,7 @@ def validateStaticFilters(response, strId, strName):
 
 def validateDsPlp():
     """
-    Objective: Validate PLP through Categories
+    Objective: Validate PLP through DS
     
     Params: dictCategory
     Returns: None
