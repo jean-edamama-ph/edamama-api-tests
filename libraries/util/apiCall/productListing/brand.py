@@ -56,7 +56,6 @@ def filterByPrice(response, strId, strName, strSetMinMax = '', blnEnableIncremen
             intMin = dTestData.plp.intPriceFilterMin
             intMax = dTestData.plp.intPriceFilterMax
             intBaseMaxPrice = intMax
-    print(int(rProductListing.sf.getPriceFilterOptions(response)))
     for intMin in uCommon.progressBar(range(intMin, intBaseMaxPrice, intIncrementValue), f'{strName} | Price Filter:'):
         intMax = intMin + intIncrementValue
         if intMax > intBaseMaxPrice:
