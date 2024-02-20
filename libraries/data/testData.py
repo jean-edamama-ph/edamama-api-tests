@@ -1,5 +1,12 @@
 class plp:
     """PRODUCT LISTING"""
+    
+    intPriceFilterMin = 500
+    
+    intPriceFilterIncrement = 8000
+    
+    intPriceFilterMax = 8000
+    
     diapering = {
                 "strCategoryName": "Diapering", 
                 "strCategoryId": "6091f6d349accc5190ff9c0f"
@@ -48,6 +55,11 @@ class plp:
                 "strCategoryName": "Beauty and Wellness", 
                 "strCategoryId": "6445fff871d87188731ac829"
             }
+    
+    anko = {
+                "strCategoryName": "Anko", 
+                "strCategoryId": "anko-1670811910934"
+        }
     
     
     

@@ -990,3 +990,51 @@ class srv:
             except AssertionError as strError:
                 errorLog.append(f'\n[SEARCH RESULTS] ISSUE: {strError}')
                 uCommon.errorCounter()
+
+
+
+
+
+class cp:
+    """CURATED PRODUCTS"""
+    
+    def getCuratedLnameAndTitles(response):
+        """
+        Objective: Get all spotlight curated products details
+        
+        Params: response
+        Returns: arrCuratedTypes
+        Author: cgrapa_20240220
+        """
+        responseData = uCommon.getResponseData(response)
+        arrAllCuratedTypes = responseData["data"]
+        arrCuratedTypes = []
+        for strCuratedTypes in arrAllCuratedTypes:
+            strCuratedLname = strCuratedTypes["lName"]
+            strCuratedTitle = strCuratedTypes["title"]
+            arrCuratedTypes.append({'strCuratedLname': strCuratedLname, 'strCuratedTitle': strCuratedTitle})
+        return arrCuratedTypes
+
+
+
+
+
+class ds:
+    """DISCOUNT SPOTLIGHT"""
+    
+    def getDiscountSpotlightUuids(response):
+        """
+        Objective: Get all Discount Spotlight details
+        
+        Params: response
+        Returns: arrCuratedTypes
+        Author: cgrapa_20240220
+        """
+        responseData = uCommon.getResponseData(response)
+        arrAllDiscountSpotlights = responseData["data"]
+        arrDiscountSpotlights = []
+        for strDiscountSpotlight in arrAllDiscountSpotlights:
+            strDiscountSpotlightName = strDiscountSpotlight["name"]
+            strDiscountSpotlightUuid = strDiscountSpotlight["uuid"]
+            arrDiscountSpotlights.append({'strDiscountSpotlightName': strDiscountSpotlightName, 'strDiscountSpotlightUuid': strDiscountSpotlightUuid})
+        return arrDiscountSpotlights

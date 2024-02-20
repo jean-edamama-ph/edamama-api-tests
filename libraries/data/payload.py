@@ -268,3 +268,45 @@ class plp:
                 ],
                 "sortby": "0"
             }
+    
+    def curatedProducts(strCuratedLname):
+        return {
+                "limit":100,
+                "page":1,
+                "sortby":4,
+                "filters":[],
+                "curatedType": strCuratedLname
+            }
+    
+    def filterCuratedByPrice(strId, intMin, intMax, intPage = 1):
+        return {
+                "limit": 100,
+                "page": intPage,
+                "sortby": 4,
+                "filters": [],
+                "minPrice": intMin,
+                "maxPrice": intMax,
+                "curatedType": strId
+            }
+    
+    discountSpotlight = {}
+    
+    def discountSpotlightProducts(strUuid):
+        return {
+                "limit": 100,
+                "page": 1,
+                "sortby": 4,
+                "filters": [],
+                "productSpotlight": strUuid
+            }
+    
+    def filterDiscountSpotlightByPrice(strId, intMin, intMax, intPage = 1):
+        return {
+                "limit": 100,
+                "page": intPage,
+                "sortby": 4,
+                "filters": [],
+                "productSpotlight": strId,
+                "minPrice": intMin,
+                "maxPrice": intMax
+            }
