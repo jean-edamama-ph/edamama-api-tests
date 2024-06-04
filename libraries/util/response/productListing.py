@@ -431,26 +431,27 @@ class sr:
         dictData = {"arrPrices": arrPrices, "arrItemNames": arrItemNames}
         return dictData
     
-    def getNumberOfOrders(response):
+    def getPopularityScore(response):
         """
-        Objective: Get item Number of Orders
+        Objective: Get item popularity score
         
         Params: response
         Returns: dictData
         Author: cgrapa_20230803
+        Updated: cgrapa_20240319
         """
         responseData = uCommon.getResponseData(response)
         arrItems = (responseData["data"])["products"]
-        arrNumberOfOrders = []
+        arrPopularityScores = []
         arrItemNames = []
         for strItem in arrItems:
             strItemName = strItem["name"]
-            intItemNumberOfOrders = strItem["noOfOrders"]
+            intPopularityScore = strItem["popularity"]
             intItemQuantity = (strItem["productDisplay"][0])["quantity"]
             if intItemQuantity > 0:
-                arrNumberOfOrders.append(intItemNumberOfOrders)
+                arrPopularityScores.append(intPopularityScore)
                 arrItemNames.append(strItemName)
-        dictData = {"arrNumberOfOrders": arrNumberOfOrders, "arrItemNames": arrItemNames}
+        dictData = {"arrPopularityScores": arrPopularityScores, "arrItemNames": arrItemNames}
         return dictData
     
     def getDiscounts(response):
@@ -596,15 +597,15 @@ class sv:
         Returns: None
         Author: cgrapa_20230803
         """
-        dictData = sr.getNumberOfOrders(response)
-        arrNumberOfOrders = dictData["arrNumberOfOrders"]
+        dictData = sr.getPopularityScore(response)
+        arrPopularityScores = dictData["arrPopularityScores"]
         arrItemNames = dictData["arrItemNames"]
-        arrSortedNumberOfOrders = uCommon.sortArray(arrNumberOfOrders, True)
-        for intIndex, intNumberOfOrders in enumerate(arrNumberOfOrders):
+        arrSortedPopularityScores = uCommon.sortArray(arrPopularityScores, True)
+        for intIndex, intNumberOfOrders, in enumerate(arrPopularityScores):
             try:
-                intCorrectRank = arrSortedNumberOfOrders.index(intNumberOfOrders) + 1
+                intCorrectRank = arrSortedPopularityScores.index(intNumberOfOrders) + 1
                 intIncorrectRank = intIndex + 1
-                assert intNumberOfOrders == arrSortedNumberOfOrders[intIndex], f'Item "{arrItemNames[intIndex]}" with "{intNumberOfOrders} Orders" should be in rank {intCorrectRank} instead of {intIncorrectRank} | Page: {intPage}'
+                assert intNumberOfOrders == arrSortedPopularityScores[intIndex], f'Item "{arrItemNames[intIndex]}" with "{intNumberOfOrders} Orders" should be in rank {intCorrectRank} instead of {intIncorrectRank} | Page: {intPage}'
             except AssertionError as strError:
                 errorLog.append(f'\n[POPULARITY SORTING] ISSUE: {strError}')
                 uCommon.errorCounter()

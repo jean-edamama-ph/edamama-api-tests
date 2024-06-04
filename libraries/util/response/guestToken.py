@@ -11,3 +11,8 @@ def guestToken(response):
     responseData = uCommon.getResponseData(response)
     guestToken = responseData["data"]
     return guestToken
+
+def getAccessToken(response):
+    responseDate = uCommon.getResponseData(response)
+    accessToken = responseDate['data']['accessToken']
+    return accessToken

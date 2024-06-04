@@ -455,6 +455,6 @@ def validateCategoriesPlp(dictCategory):
     Author: cgrapa_20230803
     """
     response = postTypesProducts(dPayload.plp.products(dictCategory["strCategoryId"]))
-    #validateDynamicFilters(response, dictCategory["strCategoryId"], dictCategory["strCategoryName"])
+    validateDynamicFilters(response, dictCategory["strCategoryId"], dictCategory["strCategoryName"])
     validateStaticFilters(response, dictCategory["strCategoryId"], dictCategory["strCategoryName"])
-    #validateSorting(dictCategory["strCategoryId"], dictCategory["strCategoryName"])
+    validateSorting(dictCategory["strCategoryId"], dictCategory["strCategoryName"])

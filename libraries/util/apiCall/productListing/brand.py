@@ -77,6 +77,32 @@ def validateStaticFilters(response, strId, strName):
         match strStatic:
             case 'Price': filterByPrice(response, strId, strName)
 
+def sortByPopularity(strCategoryId, strCategoryName):
+    """
+    Objective: Sort and validate items by Popularity
+    
+    Method: POST
+    API Endpoint: /types/products
+    Payload: limit | page | sortby | filters | parentCategory
+    Author: cgrapa_20230803
+    """
+    response = postTypesProducts(dPayload.plp.sortBy(strCategoryId, 4))
+    intPages = rProductListing.plp.calculatePlpPages(response)
+    for intPage in uCommon.progressBar(range(intPages), f'{strCategoryName} | Popularity Sorting:'):
+        response = postTypesProducts(dPayload.plp.sortBy(strCategoryId, 4, intPage + 1))
+        rProductListing.sv.validateSortingByPopularity(response, intPage + 1)
+    uCommon.printErrorCount('Popularity sorting')
+
+def validateSorting(strId, strBrandName):
+    """
+    Objective: Validate PLP sorting
+    
+    Params: strCategoryId | strCategoryName
+    Returns: None
+    Author: cgrapa_20230803
+    """
+    sortByPopularity(strId, strBrandName)
+
 def validateBrandPlp(strBrandName):
     """
     Objective: Validate PLP through Brand
@@ -87,3 +113,4 @@ def validateBrandPlp(strBrandName):
     """
     response = postTypesProducts(dPayload.plp.brandProducts(strBrandName))
     validateStaticFilters(response, strBrandName, strBrandName)
+    validateSorting(strBrandName, strBrandName)

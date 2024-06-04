@@ -1,32 +1,10 @@
 from tqdm import tqdm
 from libraries.util.response.productListing import errorLog
-import requests, allure, sys
+import requests, allure, sys, pprint
 
 import libraries.data.url as dUrl
 
 intErrorCount = 0
-
-def callGet(strUrl, strHeaders, strParams, strAuth):
-    """
-    Objective: GET API request
-    
-    Params: strUrl | strHeaders | strParams | strAuth
-    Returns: response
-    Author: cgrapa_20230803
-    """
-    response = requests.get(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
-    return response
-
-def callPost(strUrl, strHeaders, strPayload, strAuth):
-    """
-    Objective: POST API request
-    
-    Params: strUrl | strHeaders | strParams | strAuth
-    Returns: response
-    Author: cgrapa_20230803
-    """
-    response = requests.post(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
-    return response
 
 def getStatusCode(response):
     """
@@ -37,6 +15,32 @@ def getStatusCode(response):
     Author: cgrapa_20230803
     """
     return response.status_code
+
+def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
+    """
+    Objective: GET API request
+    
+    Params: strUrl | strHeaders | strParams | strAuth
+    Returns: response
+    Author: cgrapa_20230803
+    """
+    response = requests.get(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
+    statusCode = getStatusCode(response)
+    assert(statusCode == 200, f'Get response failed with Status Code: {statusCode}')
+    return response
+
+def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
+    """
+    Objective: POST API request
+    
+    Params: strUrl | strHeaders | strParams | strAuth
+    Returns: response
+    Author: cgrapa_20230803
+    """
+    response = requests.post(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+    statusCode = getStatusCode(response)
+    assert(statusCode == 200, f'Get response failed with Status Code: {statusCode}')
+    return response
 
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
     """
@@ -252,3 +256,6 @@ def countCharacterChange(strCompareWith, strCompareTo):
         if charCompareWith != charCompareTo:
             count += 1
     return count
+
+def prettyPrint(dictData):
+    return pprint.pprint(dictData)

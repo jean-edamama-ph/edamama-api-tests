@@ -1,3 +1,17 @@
+class lgn:
+    """LOGIN"""
+    
+    def userLogin(email, password):
+        return {
+            "email": email,
+            "password": password
+        }
+
+
+
+
+
+
 class plp:
     """PRODUCT LISTING"""
     
@@ -362,3 +376,19 @@ class plp:
                 "minPrice": intMin,
                 "maxPrice": intMax
             }
+        
+
+
+
+
+class crt:
+    def addToCart(prodId, variantId, qty):
+        return {
+                "items":[
+                    {
+                     "productId": prodId,
+                     "variantId": variantId,
+                     "quantity": qty
+                     }],
+                "type":"buy"
+                }

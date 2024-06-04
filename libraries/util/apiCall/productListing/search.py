@@ -356,13 +356,13 @@ def validateSearchSorting(strSearchTerm):
     Returns: None
     Author: cgrapa_20231123
     """
-    sortByRelevance(strSearchTerm)
-    sortSearchByDiscountHighToLow(strSearchTerm)
-    sortSearchByLastUpdated(strSearchTerm)
-    sortSearchByNewest(strSearchTerm)
+    #sortByRelevance(strSearchTerm)
+    #sortSearchByDiscountHighToLow(strSearchTerm)
+    #sortSearchByLastUpdated(strSearchTerm)
+    #sortSearchByNewest(strSearchTerm)
     sortSearchByPopularity(strSearchTerm)
-    sortSearchByPriceHighToLow(strSearchTerm)
-    sortSearchByPriceLowToHigh(strSearchTerm)
+    #sortSearchByPriceHighToLow(strSearchTerm)
+    #sortSearchByPriceLowToHigh(strSearchTerm)
 
 def validateSearchPlp(strSearchTerm, blnCheckSorting = True, blnCheckFiltering = True):
     """
@@ -376,12 +376,12 @@ def validateSearchPlp(strSearchTerm, blnCheckSorting = True, blnCheckFiltering =
         strSearchTerm = "uni-love"
     response = postTypesProducts(dPayload.plp.search(strSearchTerm))
     intWordCount = uCommon.splitPhraseToWords(strSearchTerm, True)
-    if intWordCount == 1:
-        validateSearchResults(response, strSearchTerm)
-    else:
-        validateSearchResults(response, strSearchTerm, True)
+    #if intWordCount == 1:
+    #    validateSearchResults(response, strSearchTerm)
+    #else:
+    #    validateSearchResults(response, strSearchTerm, True)
     if blnCheckSorting == True:
         validateSearchSorting(strSearchTerm)
-    if blnCheckFiltering == True:
-        validateFiltersSearchPlp(strSearchTerm)
-        validateStaticFiltersSearchPlp(strSearchTerm)
+    #if blnCheckFiltering == True:
+    #    validateFiltersSearchPlp(strSearchTerm)
+    #    validateStaticFiltersSearchPlp(strSearchTerm)

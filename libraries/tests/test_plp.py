@@ -96,7 +96,7 @@ def test_AUTO_000_DS_PLP_Validation():
 def test_AUTO_000_SNS_PLP_Validation():
     apiSns.validateSnsPlp()
 
-@pytest.mark.thisTest()
+@pytest.mark.api()
 @allure.step('Verify if products displayed through Brand Name PLPs are valid')
 def test_AUTO_000_Brand_PLP_Validation():
     strBrand = dTestData.plp.strBrand

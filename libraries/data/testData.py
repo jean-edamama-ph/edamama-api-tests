@@ -1,3 +1,11 @@
+class lgn:
+        """LOGIN"""
+        email = "testkpcmanual+2@gmail.com"
+        password = "Edamama@123!"
+
+
+
+
 class plp:
     """PRODUCT LISTING"""
     
@@ -70,7 +78,7 @@ class plp:
     class src:
         """SEARCH"""
 
-        searchTerm = 'car seats'
+        searchTerm = 'diaper'
         
         top30SearchTerms = ['unilove', 'mustela', 'littledragon', 'pampers', 'cetaphil', 'kleenfant', 'yoboo', 'big brute', 'diaper', 'cuddly', 'wipes', 'stroller',
                         'avent', 'aveeno', 'pigeon', 'eq', 'bearbrand', 'surf', 'huggies', 'nivea', 'dove', 'vaseline', 'cetaphil baby', 'unilove wipes', 'bear brand',
@@ -241,3 +249,70 @@ class plp:
                             'watches'
                             ]
                     }]
+
+
+
+
+
+class tss:
+        """TRUE SPLIT SHIPMENT TD FOR E2E"""
+        whNasalAspiratorTravelCase = {
+                "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",
+                "prodId": "5de5ef90b6447b50049eb286",
+                "variantId": "5dec931f5d5c9c6d17a78ea3"
+        }
+        whMagicUnicorn = {
+                "listName": "tala-toys-tala-tiles-magnetic-tiles-triangles-set-48piece-1649733744417",
+                "prodId": "663b1362cbcbab18c9f2cb88",
+                "variantId": "663b1374e16c0c79bfbf68be"
+        }
+        whBabyNasalAspirator = {
+                "listName": "tiny-buds-baby-nasal-aspirator-1585030934577",
+                "prodId": "5e79a716cb032a3a516aa88b",
+                "variantId": "5e79a74b7c5876bce1a13f93"
+        }
+        whHandsoap300mlRefillPouch = {
+                "listName": "unilove-handsoap-300ml-refill-pouch-1658715111069",
+                "prodId": "62ddfbe7d2f0c27156b8f1f4",
+                "variantId": "62ddfc057bcbea5b0d591975"
+        }
+        whAfterBitesNaturalSoothingGel = {
+                "listName": "tiny-buds-after-bites-natural-soothing-gel-50ml-1585027038957",
+                "prodId": "5e7997de572f95ce55a0d20f",
+                "variantId": "5f093f69c58b2e57e2764308"
+        }
+        whTssWhProductA = {
+                "listName": "tss-product-a-1716171746289",
+                "prodId": "664ab3e28206beb7c2c12f3a",
+                "variantId": "664ab5176e08f1e7ab859a6f"
+        }
+        whTssWhProductB = {
+                "listName": "tss-wh-product-b-1716172042369",
+                "prodId": "664ab50a6e08f1e7ab859a5d",
+                "variantId": "664ab5176e08f1e7ab859a6f"
+        }
+        whTssWhProductC = {
+                "listName": "tss-wh-product-c-1716172120205",
+                "prodId": "664ab558c84b9e6fc3c3cce3",
+                "variantId": "664ab564dc547b40c17e6161"
+        }
+        whTssWhProductE = {
+                "listName": "tss-wh-product-e-1716172244383",
+                "prodId": "664ab5d4bc9594aed6b3ca9d",
+                "variantId": "664ab5ebdc547b40c17e61cb"
+        }
+        whTssWhProductF = {
+                "listName": "tss-wh-product-f-1716172384598",
+                "prodId": "664ab66086fce3d202126e68",
+                "variantId": "664ab686bc9594aed6b3caf7"
+        }
+        whSnsAutoProd = {
+                "listName": "tsns-automation-product--please-do-not-update-or-delete-1698982294073",
+                "prodId": "65446996bb20f86572e28d93",
+                "variantId": "654469a7e414e585fe8649bc"
+        }
+        whSnsBabyDryTapedJumboLarge = {
+                "listName": "baby-dry-taped-super-jumbo-large-2pack-2-x-68pcs--subscription-1658894664980",
+                "prodId": "62e0b9485c52803d08827792",
+                "variantId": "62e0cf2e38d84df35cc1a1a2"
+        }
