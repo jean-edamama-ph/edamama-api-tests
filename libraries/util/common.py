@@ -58,6 +58,7 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
     statusCode = getStatusCode(response)
     responseData = getResponseData(response)
     assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+    return response
 
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
     """
