@@ -6,6 +6,49 @@ class lgn:
 
 
 
+class md:
+        """MONGODB"""
+        strConnectionStringScheme = 'edamamaprecluster-pl-0.lmbse.mongodb.net/'
+        strDatabaseName = 'edamamaprod_db'
+        strPemFilePath = 'C:\\edamama-pre-mongo-db-atlas-x509.pem'
+
+
+
+
+
+class rsg:
+        """REGISTRATION"""
+        strEmail = "testapi04-automation@gmail.com"
+        strPassword = "test123"
+        strFirstName = "QA API"
+        strLastName = "Automation Test"
+        boolIsPolicyChecked = True
+
+
+
+
+class add:
+        """ADDRESS"""
+        addAddress = {
+                "firstName": "QA API",
+                "lastName": "Automation Test",
+                "fullName": "QA API Automation Test",
+                "phoneNumber": "9171234567",
+                "regionName": "METRO MANILA",
+                "regionId": "5dc5309b73a7ecd817f5b781",
+                "cityName": "MANDALUYONG CITY",
+                "cityId": "609fc3a7b1380627d48c7519",
+                "cityRegionId" : "5dc5309b73a7ecd817f5b781",
+                "zipCode": "3023",
+                "barangayName": "BARANGKA DRIVE",
+                "barangayId": "62cd49f8aefc154907c8a066",
+                "barangayCityId": "609fc3a7b1380627d48c7519",
+                "landmark":  "SMDC Light Residences",
+                "buildingNumber": "",
+                "country": "Philippines",
+                "isDefault": False
+        }
+
 class plp:
     """PRODUCT LISTING"""
     

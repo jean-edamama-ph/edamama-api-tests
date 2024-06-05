@@ -10,7 +10,53 @@ class lgn:
 
 
 
+class rsg:
+    """REGISTRATION"""
 
+    def userSignUp(strEmail, strPassword, strFirstName, strLastName, boolIsPolicyChecked):
+        return {
+                "email": strEmail,
+                "password": strPassword,
+                "firstName": strFirstName,
+                "lastName": strLastName,
+                "isPolicyChecked": boolIsPolicyChecked
+        }
+
+
+
+
+
+
+class prf:
+    """PROFILE"""
+    
+    def userAddress(strFname, strLname, strFullName, strPhoneNum, strRegionName, strRegionId, strCityName, strCityId, strCityRegionId, strZipCode, strBarangayName, strBarangayId,
+                    strBarangayCityId, strLandmark, strBuildingNumber, strCountry, boolIsDefault):
+        return {
+                "firstName": strFname,
+                "lastName": strLname,
+                "fullName": strFullName,
+                "phoneNumber": strPhoneNum,
+                "region": {
+                    "name": strRegionName,
+                    "_id": strRegionId,
+                },
+                "city": {
+                    "name": strCityName,
+                    "_id": strCityId,
+                    "regionId": strCityRegionId,
+                },
+                "zipCode": strZipCode,
+                "barangay": {
+                    "name": strBarangayName,
+                    "_id": strBarangayId,
+                    "cityId": strBarangayCityId,
+                },
+                "landmark": strLandmark,
+                "buildingNumber": strBuildingNumber,
+                "country": strCountry,
+                "isDefault": boolIsDefault
+        }
 
 class plp:
     """PRODUCT LISTING"""
