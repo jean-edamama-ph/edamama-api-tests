@@ -9,10 +9,17 @@ def guestToken(response):
     Author: cgrapa_20230803
     """
     responseData = uCommon.getResponseData(response)
-    guestToken = responseData["data"]
+    guestToken = responseData['data']
     return guestToken
 
 def getAccessToken(response):
+    """
+    Objective: Get access token
+        
+    Params: response
+    Returns: accessToken
+    Author: cgrapa_20240604
+    """
     responseDate = uCommon.getResponseData(response)
     accessToken = responseDate['data']['accessToken']
     return accessToken

@@ -11,21 +11,3 @@ def withToken(strToken = ''):
   else:
     headers = {"Authorization": f'Bearer {strToken}', "Api-Key": "1234"}
   return headers
-
-def basicAuthorization():
-  headers = {
-    "Content-Type": "application/json", 
-    "Authorization": "Basic ZWRhbWFtYTplZGFtYW1hQDEyMw==",
-    "Api-Key": "1234"
-    }
-  return headers
-
-def bearerAuthorization(accessToken):
-  headers = {
-    "Content-Type": "application/json", 
-    "Guest-Token": apiGuestToken.getGuestToken(),
-    #"Authorization": '"' + "Bearer " + accessToken + '"',
-    "Authorization": '"' + f'Bearer {accessToken}' + '"',
-    "Api-Key": "1234"
-    } 
-  return headers

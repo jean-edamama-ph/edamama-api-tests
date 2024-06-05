@@ -6,6 +6,49 @@ class lgn:
 
 
 
+class md:
+        """MONGODB"""
+        strConnectionStringScheme = 'edamamaprecluster-pl-0.lmbse.mongodb.net/'
+        strDatabaseName = 'edamamaprod_db'
+        strPemFilePath = 'C:\\edamama-pre-mongo-db-atlas-x509.pem'
+
+
+
+
+
+class rsg:
+        """REGISTRATION"""
+        strEmail = "testapi04-automation@gmail.com"
+        strPassword = "test123"
+        strFirstName = "QA API"
+        strLastName = "Automation Test"
+        boolIsPolicyChecked = True
+
+
+
+
+class add:
+        """ADDRESS"""
+        addAddress = {
+                "firstName": "QA API",
+                "lastName": "Automation Test",
+                "fullName": "QA API Automation Test",
+                "phoneNumber": "9171234567",
+                "regionName": "METRO MANILA",
+                "regionId": "5dc5309b73a7ecd817f5b781",
+                "cityName": "MANDALUYONG CITY",
+                "cityId": "609fc3a7b1380627d48c7519",
+                "cityRegionId" : "5dc5309b73a7ecd817f5b781",
+                "zipCode": "3023",
+                "barangayName": "BARANGKA DRIVE",
+                "barangayId": "62cd49f8aefc154907c8a066",
+                "barangayCityId": "609fc3a7b1380627d48c7519",
+                "landmark":  "SMDC Light Residences",
+                "buildingNumber": "",
+                "country": "Philippines",
+                "isDefault": False
+        }
+
 class plp:
     """PRODUCT LISTING"""
     
@@ -315,4 +358,34 @@ class tss:
                 "listName": "baby-dry-taped-super-jumbo-large-2pack-2-x-68pcs--subscription-1658894664980",
                 "prodId": "62e0b9485c52803d08827792",
                 "variantId": "62e0cf2e38d84df35cc1a1a2"
+        }
+        scTssScProductM= {
+                "listName": "tss-sc-product-m-1716173524214",
+                "prodId": "664abad46e08f1e7ab859c71",
+                "variantId": "664abae06e08f1e7ab859c92"
+        }
+        scTssScProductN= {
+                "listName": "tss-sc-product-n-1716173612380",
+                "prodId": "664abb2c1cf02bf66729fa12",
+                "variantId": "664abb3c1cf02bf66729fa32"
+        }
+        scTssScProductO= {
+                "listName": "tss-sc-product-o-1716173683506",
+                "prodId": "664abb738206beb7c2c131a1",
+                "variantId": "664abb7fdc547b40c17e632b"
+        }
+        scTssScProductP= {
+                "listName": "tss-sc-product-p-1716173751898",
+                "prodId": "664abbb7dc547b40c17e6361",
+                "variantId": "664abbc486fce3d2021270e8"
+        }
+        scTssScProductQ= {
+                "listName": "tss-sc-product-q-1716173809492",
+                "prodId": "664abbf1dc547b40c17e637e",
+                "variantId": "664abbff6e08f1e7ab859d15"
+        }
+        scTssScProductR= {
+                "listName": "tss-sc-product-r-1716173876592",
+                "prodId": "664abc3486fce3d2021271cd",
+                "variantId": "664abc478206beb7c2c1321d"
         }

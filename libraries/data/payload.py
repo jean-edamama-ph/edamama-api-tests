@@ -10,7 +10,53 @@ class lgn:
 
 
 
+class rsg:
+    """REGISTRATION"""
 
+    def userSignUp(strEmail, strPassword, strFirstName, strLastName, boolIsPolicyChecked):
+        return {
+                "email": strEmail,
+                "password": strPassword,
+                "firstName": strFirstName,
+                "lastName": strLastName,
+                "isPolicyChecked": boolIsPolicyChecked
+        }
+
+
+
+
+
+
+class prf:
+    """PROFILE"""
+    
+    def userAddress(strFname, strLname, strFullName, strPhoneNum, strRegionName, strRegionId, strCityName, strCityId, strCityRegionId, strZipCode, strBarangayName, strBarangayId,
+                    strBarangayCityId, strLandmark, strBuildingNumber, strCountry, boolIsDefault):
+        return {
+                "firstName": strFname,
+                "lastName": strLname,
+                "fullName": strFullName,
+                "phoneNumber": strPhoneNum,
+                "region": {
+                    "name": strRegionName,
+                    "_id": strRegionId,
+                },
+                "city": {
+                    "name": strCityName,
+                    "_id": strCityId,
+                    "regionId": strCityRegionId,
+                },
+                "zipCode": strZipCode,
+                "barangay": {
+                    "name": strBarangayName,
+                    "_id": strBarangayId,
+                    "cityId": strBarangayCityId,
+                },
+                "landmark": strLandmark,
+                "buildingNumber": strBuildingNumber,
+                "country": strCountry,
+                "isDefault": boolIsDefault
+        }
 
 class plp:
     """PRODUCT LISTING"""
@@ -382,13 +428,79 @@ class plp:
 
 
 class crt:
-    def addToCart(prodId, variantId, qty):
+    def addToCart(strProdId, strVariantId, intQty):
         return {
                 "items":[
                     {
-                     "productId": prodId,
-                     "variantId": variantId,
-                     "quantity": qty
+                     "productId": strProdId,
+                     "variantId": strVariantId,
+                     "quantity": intQty
                      }],
                 "type":"buy"
                 }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": True,
+            "isForCheckout": False
+            }
+
+
+
+
+
+class co:
+    """CHECK OUT"""
+    
+    def updateMany(strCartId, strItemId):
+        return {
+                "_id": strCartId,
+                "giftInstructions": "",
+                "items": [
+                    {
+                    "_id": strItemId,
+                    "isGiftWrapped": False,
+                    "giftNote": "",
+                    "isForCheckout": True
+                    }
+                ]
+            }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": True,
+            "isForCheckout": True
+            }
+
+
+
+
+
+class po:
+    """PLACE ORDER"""
+    
+    def updatePayment(strCartId):
+        return {
+                "cartId": strCartId,
+                "freebieId": None,
+                "paymentMethod": 2,
+                "billingAddress": None
+            }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": False,
+            "isForCheckout": True
+        }
+    
+    def ordersGenerate(strCartId):
+        return {
+                "cartId": strCartId,
+                "selectiveCartMode": True,
+                "paymentMethod": 2
+            }
+    
+    def checkout(strOrderId):
+        return {
+                "orderId": strOrderId
+            }

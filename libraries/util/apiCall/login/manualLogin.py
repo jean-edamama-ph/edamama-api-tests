@@ -11,10 +11,6 @@ def postUserLogin(strEmail, strPassword):
     Payload: email | password
     Author: jatregenio_20240528
     """
-    #response = uCommon.callPost(dUrl.lgn.userLogin, dHeaders.basicAuthorization(), dPayload.lgn.userLogin (strEmail, strPassword), dHeaders.auth)
-    #assert respData['statusCode'] == 200, "Login unsuccessful."
-    #accessToken = (respData['data']['accessToken'])
-    #return accessToken
     response = uCommon.callPost(dUrl.lgn.userLogin, dHeaders.withToken(), dPayload.lgn.userLogin(strEmail, strPassword), dHeaders.auth)
     accessToken = rGuestToken.getAccessToken(response)
     return accessToken
