@@ -1,5 +1,7 @@
 import os, shutil
+import libraries.util.common as uCommon
 
+strOS = uCommon.strOS
 
 def copyFolder():
     if os.path.exists('reports/backup/allure-result'):
@@ -14,7 +16,10 @@ def cleanUpFolder(strAbsPath = '', strFolder = ''):
     folderPath = os.path.abspath(f'./{strAbsPath}' + strFolder) 
     arrFiles = os.listdir(folderPath)
     for item in arrFiles:
-        arrFiles = folderPath + '\\' + item
+        if strOS == 'windows':
+            arrFiles = folderPath + '\\' + item
+        elif strOS == 'mac':
+            arrFiles = folderPath + '/' + item
         os.remove(arrFiles)
 
 

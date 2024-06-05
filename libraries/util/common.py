@@ -7,6 +7,8 @@ import requests, allure, sys, pprint
 
 import libraries.data.url as dUrl
 
+strOS = 'windows'   # windows, mac
+
 intErrorCount = 0
 
 def getStatusCode(response):
