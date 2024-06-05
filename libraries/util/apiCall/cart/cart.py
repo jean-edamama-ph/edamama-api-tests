@@ -55,7 +55,6 @@ def getCartItemsLength(strAccessToken):
     """
     response = uCommon.callPost(dUrl.crt.getCartItemsLength, dHeaders.bearerAuthorization(strAccessToken), strPayload = "", strAuth = dHeaders.auth)
     respData = uCommon.getResponseData(response)
-    print(respData)
     assert respData['statusCode'] == 200, 'Cart items lengeth not retrieved.' 
     cartItemsLength = (respData['data'])
     return cartItemsLength

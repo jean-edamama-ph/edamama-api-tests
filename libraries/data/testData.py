@@ -1,6 +1,6 @@
 class lgn:
         """LOGIN"""
-        email = "testkpcmanual+2@gmail.com"
+        email = "testkpcmanual+3@gmail.com"
         password = "Edamama@123!"
 
 
@@ -299,6 +299,9 @@ class plp:
 
 class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""
+        strReferralCode = "QA20231031080638813920-2"
+        intPaymentMethod = 2
+        
         whNasalAspiratorTravelCase = {
                 "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",
                 "prodId": "5de5ef90b6447b50049eb286",
@@ -358,4 +361,34 @@ class tss:
                 "listName": "baby-dry-taped-super-jumbo-large-2pack-2-x-68pcs--subscription-1658894664980",
                 "prodId": "62e0b9485c52803d08827792",
                 "variantId": "62e0cf2e38d84df35cc1a1a2"
+        }
+        scTssScProductM= {
+                "listName": "tss-sc-product-m-1716173524214",
+                "prodId": "664abad46e08f1e7ab859c71",
+                "variantId": "664abae06e08f1e7ab859c92"
+        }
+        scTssScProductN= {
+                "listName": "tss-sc-product-n-1716173612380",
+                "prodId": "664abb2c1cf02bf66729fa12",
+                "variantId": "664abb3c1cf02bf66729fa32"
+        }
+        scTssScProductO= {
+                "listName": "tss-sc-product-o-1716173683506",
+                "prodId": "664abb738206beb7c2c131a1",
+                "variantId": "664abb7fdc547b40c17e632b"
+        }
+        scTssScProductP= {
+                "listName": "tss-sc-product-p-1716173751898",
+                "prodId": "664abbb7dc547b40c17e6361",
+                "variantId": "664abbc486fce3d2021270e8"
+        }
+        scTssScProductQ= {
+                "listName": "tss-sc-product-q-1716173809492",
+                "prodId": "664abbf1dc547b40c17e637e",
+                "variantId": "664abbff6e08f1e7ab859d15"
+        }
+        scTssScProductR= {
+                "listName": "tss-sc-product-r-1716173876592",
+                "prodId": "664abc3486fce3d2021271cd",
+                "variantId": "664abc478206beb7c2c1321d"
         }

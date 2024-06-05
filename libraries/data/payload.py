@@ -30,8 +30,24 @@ class rsg:
 class prf:
     """PROFILE"""
     
-    def userAddress(strFname, strLname, strFullName, strPhoneNum, strRegionName, strRegionId, strCityName, strCityId, strCityRegionId, strZipCode, strBarangayName, strBarangayId,
-                    strBarangayCityId, strLandmark, strBuildingNumber, strCountry, boolIsDefault):
+    def userAddress(dictAddress):
+        strFname = dictAddress["firstName"]
+        strLname = dictAddress["lastName"]
+        strFullName = dictAddress["fullName"]
+        strPhoneNum = dictAddress["phoneNumber"]
+        strRegionName = dictAddress["regionName"]
+        strRegionId = dictAddress["regionId"]
+        strCityName = dictAddress["cityName"]
+        strCityId = dictAddress["cityId"]
+        strCityRegionId = dictAddress["cityRegionId"]
+        strZipCode = dictAddress["zipCode"]
+        strBarangayName = dictAddress["barangayName"]
+        strBarangayId = dictAddress["barangayId"]
+        strBarangayCityId = dictAddress["barangayCityId"]
+        strLandmark = dictAddress["landmark"]
+        strBuildingNumber = dictAddress["buildingNumber"]
+        strCountry = dictAddress["country"]
+        boolIsDefault = dictAddress["isDefault"]
         return {
                 "firstName": strFname,
                 "lastName": strLname,
@@ -471,6 +487,13 @@ class co:
             "clearPayment": True,
             "isForCheckout": True
             }
+    
+    def applyVoucher(strCartId, strCouponCode, intPaymentMethod):
+        return {
+                "couponCode": strCouponCode,
+                "cartId": strCartId,
+                "paymentMethod": intPaymentMethod
+        }
 
 
 
@@ -486,6 +509,39 @@ class po:
                 "paymentMethod": 2,
                 "billingAddress": None
             }
+    
+    def updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex, strCartId):
+        strId = listCouponDetails[intCouponDetailsIndex]["_id"]
+        listBrand = listCouponDetails[intCouponDetailsIndex]["brand"]
+        strCouponCode = listCouponDetails[intCouponDetailsIndex]["couponCode"]
+        strCouponRule = listCouponDetails[intCouponDetailsIndex]["couponRule"]
+        intCouponType = listCouponDetails[intCouponDetailsIndex]["couponType"]
+        floatDiscountAmount = listCouponDetails[intCouponDetailsIndex]["discountAmount"]
+        strIsSpecialCoupon = listCouponDetails[intCouponDetailsIndex]["isSpecialCoupon"]
+        listPaymentMethod = listCouponDetails[intCouponDetailsIndex]["paymentMethod"]
+        strTag = listCouponDetails[intCouponDetailsIndex]["tag"]
+        return {
+              "coupons": [
+                {
+                "discountAmount": floatDiscountAmount,
+                "couponType": intCouponType,
+                "couponCode": strCouponCode,
+                "couponRule": strCouponRule,
+                "tag": strTag,
+                "isSpecialCoupon": strIsSpecialCoupon,
+                "brand": listBrand,
+                "paymentMethod": listPaymentMethod,
+                "_id": strId,
+                "referralBeans": 300
+                }
+            ],
+               "isBeansUsed": False,
+                "beansType": None,
+                "cartId": strCartId,
+                "freebieId": None,
+                "paymentMethod": 2,
+                "billingAddress": None 
+        }
     
     getCart = {
             "type": "buy",

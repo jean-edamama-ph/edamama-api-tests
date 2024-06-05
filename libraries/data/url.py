@@ -60,6 +60,7 @@ class co:
     
     updateMany = '/user/cartItems/updateMany'
     getCart = '/user/getCart'
+    applyVoucher = '/user/carts/applyVoucher'
 
 
 
