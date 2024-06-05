@@ -42,3 +42,27 @@ class crt:
     """CART"""
     cart = '/user/carts'
     getCartItemsLength = '/user/carts/getCartItemsLength'
+    getCart = '/user/getCart'
+
+
+
+
+
+class co:
+    """CHECKOUT"""
+    
+    updateMany = '/user/cartItems/updateMany'
+    getCart = '/user/getCart'
+
+
+
+
+
+class po:
+    """PLACE ORDER"""
+    
+    updatePayment = '/user/carts/updatePayment'
+    getCart = '/user/getCart'
+    ordersGenerate = '/user/orders/generate'
+    checkout = '/user/carts/checkout'
+    

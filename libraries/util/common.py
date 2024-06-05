@@ -16,6 +16,17 @@ def getStatusCode(response):
     """
     return response.status_code
 
+def getResponseData(response):
+    """
+    Objective: Get API response data
+    
+    Params: response
+    Returns: responseData
+    Author: cgrapa_20230803
+    """
+    responseData = response.json()
+    return responseData
+
 def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
     """
     Objective: GET API request
@@ -26,7 +37,8 @@ def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
     """
     response = requests.get(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
     statusCode = getStatusCode(response)
-    assert(statusCode == 200, f'Get response failed with Status Code: {statusCode}')
+    responseData = getResponseData(response)
+    assert statusCode == 200, f'Get response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
     return response
 
 def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
@@ -39,7 +51,8 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
     """
     response = requests.post(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
     statusCode = getStatusCode(response)
-    assert(statusCode == 200, f'Get response failed with Status Code: {statusCode}')
+    responseData = getResponseData(response)
+    assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
     return response
 
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
@@ -69,17 +82,6 @@ def callGetAndValidateResponse(strUrl, strHeaders = '', strParams = '', strAuth 
         statusCode = getStatusCode(response)
         if statusCode == 200:
             return response
-
-def getResponseData(response):
-    """
-    Objective: Get API response data
-    
-    Params: response
-    Returns: responseData
-    Author: cgrapa_20230803
-    """
-    responseData = response.json()
-    return responseData
     
 def getArrayCount(strResponseData):
     """

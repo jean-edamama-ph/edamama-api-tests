@@ -382,13 +382,79 @@ class plp:
 
 
 class crt:
-    def addToCart(prodId, variantId, qty):
+    def addToCart(strProdId, strVariantId, intQty):
         return {
                 "items":[
                     {
-                     "productId": prodId,
-                     "variantId": variantId,
-                     "quantity": qty
+                     "productId": strProdId,
+                     "variantId": strVariantId,
+                     "quantity": intQty
                      }],
                 "type":"buy"
                 }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": True,
+            "isForCheckout": False
+            }
+
+
+
+
+
+class co:
+    """CHECK OUT"""
+    
+    def updateMany(strCartId, strItemId):
+        return {
+                "_id": strCartId,
+                "giftInstructions": "",
+                "items": [
+                    {
+                    "_id": strItemId,
+                    "isGiftWrapped": False,
+                    "giftNote": "",
+                    "isForCheckout": True
+                    }
+                ]
+            }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": True,
+            "isForCheckout": True
+            }
+
+
+
+
+
+class po:
+    """PLACE ORDER"""
+    
+    def updatePayment(strCartId):
+        return {
+                "cartId": strCartId,
+                "freebieId": None,
+                "paymentMethod": 2,
+                "billingAddress": None
+            }
+    
+    getCart = {
+            "type": "buy",
+            "clearPayment": False,
+            "isForCheckout": True
+        }
+    
+    def ordersGenerate(strCartId):
+        return {
+                "cartId": strCartId,
+                "selectiveCartMode": True,
+                "paymentMethod": 2
+            }
+    
+    def checkout(strOrderId):
+        return {
+                "orderId": strOrderId
+            }
