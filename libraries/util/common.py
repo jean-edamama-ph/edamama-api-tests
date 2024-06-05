@@ -40,12 +40,8 @@ def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
     """
     response = requests.get(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
     statusCode = getStatusCode(response)
-<<<<<<< Updated upstream
     responseData = getResponseData(response)
     assert statusCode == 200, f'Get response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
-=======
-    assert statusCode == 200, f'Get response failed with Status Code: {statusCode}'
->>>>>>> Stashed changes
     return response
 
 def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
@@ -58,13 +54,8 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
     """
     response = requests.post(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
     statusCode = getStatusCode(response)
-<<<<<<< Updated upstream
     responseData = getResponseData(response)
     assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
-=======
-    assert statusCode == 200, f'Get response failed with Status Code: {statusCode}'
->>>>>>> Stashed changes
-    return response
 
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
     """
