@@ -1,6 +1,6 @@
 class lgn:
         """LOGIN"""
-        email = "testkpcmanual+2@gmail.com"
+        email = "testkpcmanual+3@gmail.com"
         password = "Edamama@123!"
 
 
@@ -18,7 +18,27 @@ class md:
 
 class rsg:
         """REGISTRATION"""
-        strEmail = "testapi04-automation@gmail.com"
+        strEmail = "testapi01-automation@gmail.com"
+        strEmail_02 = "testapi02-automation@gmail.com"
+        strEmail_03 = "testapi03-automation@gmail.com"
+        strEmail_04 = "testapi04-automation@gmail.com"
+        strEmail_05 = "testapi05-automation@gmail.com"
+        strEmail_06 = "testapi06-automation@gmail.com"
+        strEmail_07 = "testapi07-automation@gmail.com"
+        strEmail_08 = "testapi08-automation@gmail.com"
+        strEmail_09 = "testapi09-automation@gmail.com"
+        strEmail_10 = "testapi10-automation@gmail.com"
+        strEmail_11 = "testapi11-automation@gmail.com"
+        strEmail_12 = "testapi12-automation@gmail.com"
+        strEmail_13 = "testapi13-automation@gmail.com"
+        strEmail_14 = "testapi14-automation@gmail.com"
+        strEmail_15 = "testapi15-automation@gmail.com"
+        strEmail_16 = "testapi16-automation@gmail.com"
+        strEmail_17 = "testapi17-automation@gmail.com"
+        strEmail_18 = "testapi18-automation@gmail.com"
+        strEmail_19 = "testapi19-automation@gmail.com"
+        strEmail_20 = "testapi20-automation@gmail.com"
+        
         strPassword = "test123"
         strFirstName = "QA API"
         strLastName = "Automation Test"
@@ -299,6 +319,9 @@ class plp:
 
 class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""
+        strReferralCode = "QA20231031080638813920-2"
+        intPaymentMethod = 2
+        
         whNasalAspiratorTravelCase = {
                 "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",
                 "prodId": "5de5ef90b6447b50049eb286",

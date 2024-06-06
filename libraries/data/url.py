@@ -49,21 +49,18 @@ class crt:
     """CART"""
     cart = '/user/carts'
     getCartItemsLength = '/user/carts/getCartItemsLength'
-<<<<<<< Updated upstream
     getCart = '/user/getCart'
-=======
->>>>>>> Stashed changes
 
 
 
 
-<<<<<<< Updated upstream
 
 class co:
     """CHECKOUT"""
     
     updateMany = '/user/cartItems/updateMany'
     getCart = '/user/getCart'
+    applyVoucher = '/user/carts/applyVoucher'
 
 
 
@@ -77,8 +74,6 @@ class po:
     ordersGenerate = '/user/orders/generate'
     checkout = '/user/carts/checkout'
     
-=======
 class prf:
     """PROFILE"""
     address = '/users/address'
->>>>>>> Stashed changes

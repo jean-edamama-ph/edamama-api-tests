@@ -4,14 +4,19 @@ import libraries.data.url as dUrl
 import libraries.util.common as uCommon
 import libraries.util.response.placeOrder as rPlaceOrder
 
-def updatePayment(strToken, strCartId):
+def updatePayment(strToken, strCartId, listCouponDetails = "", intCouponDetailsLength = ""):
     """
     Method: POST
     API Endpoint: /user/carts/updatePayment
     Payload: cartId | freebieId | paymentMethod | billingAddress
     Author: cgrapa_20240604
     """
-    uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePayment(strCartId))
+    if listCouponDetails == "":
+        uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePayment(strCartId))
+    else:
+        intCouponDetailsIndex = intCouponDetailsLength - 1
+        if listCouponDetails[intCouponDetailsIndex]["couponType"] == 5:
+            uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex,strCartId))
     
 def getCart(strToken):
     """
