@@ -35,7 +35,7 @@ def getCart(strToken):
     response = uCommon.callPost(dUrl.crt.getCart, dHeaders.withToken(strToken), dPayload.crt.getCart)
     return response
 
-def getCartItemDetails(strToken):
+def getCartItemDetails(strToken, intCartItemsLength = ""):
     """
     Method: POST
     API Endpoint: /user/getCart
@@ -43,18 +43,21 @@ def getCartItemDetails(strToken):
     Author: cgrapa_20240604
     """
     response = getCart(strToken)
-    strItemId = rCart.getItemId(response)
-    return strItemId
+    if intCartItemsLength == "":
+        strItemId = rCart.getItemId(response)
+        return strItemId
+    else:
+        listItemId = rCart.getItemId(response, intCartItemsLength)
+        return listItemId
+        
 
-def getCartItemsLength(strAccessToken):
+def getCartItemsLength(strToken):
     """
     Method: POST
     API Endpoint: /user/carts/getCartItemsLength
     Payload: None
     Author: jatregenio_20240528
     """
-    response = uCommon.callPost(dUrl.crt.getCartItemsLength, dHeaders.bearerAuthorization(strAccessToken), strPayload = "", strAuth = dHeaders.auth)
-    respData = uCommon.getResponseData(response)
-    assert respData['statusCode'] == 200, 'Cart items lengeth not retrieved.' 
-    cartItemsLength = (respData['data'])
-    return cartItemsLength
+    response = uCommon.callPost(dUrl.crt.getCartItemsLength, dHeaders.withToken(strToken))
+    intCartItemsLength = rCart.getCartItemsLength(response)
+    return intCartItemsLength

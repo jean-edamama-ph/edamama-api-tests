@@ -468,19 +468,37 @@ class crt:
 class co:
     """CHECK OUT"""
     
-    def updateMany(strCartId, strItemId):
-        return {
-                "_id": strCartId,
-                "giftInstructions": "",
-                "items": [
+    def updateMany(strCartId, itemId):
+        if type(itemId) == str:
+            return {
+                    "_id": strCartId,
+                    "giftInstructions": "",
+                    "items": [
+                        {
+                        "_id": itemId,
+                        "isGiftWrapped": False,
+                        "giftNote": "",
+                        "isForCheckout": True
+                        }
+                    ]
+                }
+        elif type(itemId) == list:
+            listItems = []
+            for item in range (len(itemId)):
+                listItems.append(
                     {
-                    "_id": strItemId,
-                    "isGiftWrapped": False,
-                    "giftNote": "",
-                    "isForCheckout": True
+                        "_id": itemId[item],
+                        "isGiftWrapped": False,
+                        "giftNote": "",
+                        "isForCheckout": True
                     }
-                ]
+                )
+            return {
+                    "_id": strCartId,
+                    "giftInstructions": "",
+                    "items": listItems
             }
+            
     
     getCart = {
             "type": "buy",

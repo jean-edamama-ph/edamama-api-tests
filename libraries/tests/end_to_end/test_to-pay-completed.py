@@ -40,3 +40,25 @@ def test_101_DS_SC_item_single_sku_item_single_qty_checkout_with_SF_Referral_Cod
     
     #post-testing: Delete Registered Account to be re-used
     #apiManualSignUp.deleteNewSignedUpAcct(dTestData.rsg.strEmail)
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test_102_DS-SC item_multiple_items_single_qty_checkout_with_SF+Referral_Code')
+def test_102_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Referral_Code():
+    strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_02, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.boolIsPolicyChecked, dTestData.add.addAddress)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    listCouponDetails, intCouponDetailsLength = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails, intCouponDetailsLength)
+    apiPlaceOrder.getCart(strToken)
+    strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, strOrderId)
+    
+    #post-testing: Delete Registered Account to be re-used
+    #apiManualSignUp.deleteNewSignedUpAcct(dTestData.rsg.strEmail_02)
