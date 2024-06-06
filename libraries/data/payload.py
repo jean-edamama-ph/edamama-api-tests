@@ -468,31 +468,56 @@ class crt:
 class co:
     """CHECK OUT"""
     
-    def updateMany(strCartId, itemId):
+    def updateMany(strCartId, itemId, boolIsGW = ""):
         if type(itemId) == str:
-            return {
-                    "_id": strCartId,
-                    "giftInstructions": "",
-                    "items": [
-                        {
-                        "_id": itemId,
-                        "isGiftWrapped": False,
-                        "giftNote": "",
-                        "isForCheckout": True
-                        }
-                    ]
-                }
+            if boolIsGW == "" or boolIsGW == False:
+                return {
+                        "_id": strCartId,
+                        "giftInstructions": "",
+                        "items": [
+                            {
+                            "_id": itemId,
+                            "isGiftWrapped": False,
+                            "giftNote": "",
+                            "isForCheckout": True
+                            }
+                        ]
+                    }
+            else:
+                return {
+                        "_id": strCartId,
+                        "giftInstructions": "",
+                        "items": [
+                            {
+                            "_id": itemId,
+                            "isGiftWrapped": True,
+                            "giftNote": "",
+                            "isForCheckout": True
+                            }
+                        ]
+                    } 
         elif type(itemId) == list:
             listItems = []
-            for item in range (len(itemId)):
-                listItems.append(
-                    {
-                        "_id": itemId[item],
-                        "isGiftWrapped": False,
-                        "giftNote": "",
-                        "isForCheckout": True
-                    }
-                )
+            if boolIsGW == "" or boolIsGW == False:
+                for item in range (len(itemId)):
+                    listItems.append(
+                        {
+                            "_id": itemId[item],
+                            "isGiftWrapped": False,
+                            "giftNote": "",
+                            "isForCheckout": True
+                        }
+                    )
+            else:
+                for item in range (len(itemId)):
+                    listItems.append(
+                        {
+                            "_id": itemId[item],
+                            "isGiftWrapped": True,
+                            "giftNote": "",
+                            "isForCheckout": True
+                        }
+                    )
             return {
                     "_id": strCartId,
                     "giftInstructions": "",

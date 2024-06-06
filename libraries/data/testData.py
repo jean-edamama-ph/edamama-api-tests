@@ -322,6 +322,7 @@ class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""
         strReferralCode = "QA20231031080638813920-2"
         intPaymentMethod = 2
+        boolYesIsGW = True
         
         whNasalAspiratorTravelCase = {
                 "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",
