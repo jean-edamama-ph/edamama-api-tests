@@ -14,3 +14,14 @@ def postUserLogin(strEmail, strPassword):
     response = uCommon.callPost(dUrl.lgn.userLogin, dHeaders.withToken(), dPayload.lgn.userLogin(strEmail, strPassword), dHeaders.auth)
     accessToken = rGuestToken.getAccessToken(response)
     return accessToken
+
+def postAPUserLogin(strEmail, strPassword):
+    """
+    Method: POST
+    API Endpoint: /admin/login
+    Payload: email | password
+    Author: abernal_20240605
+    """
+    response = uCommon.callPost(dUrl.lgn.apLogin, dHeaders.withToken(), dPayload.lgn.userLogin(strEmail, strPassword), dHeaders.auth)
+    accessToken = rGuestToken.getAccessToken(response)
+    return accessToken

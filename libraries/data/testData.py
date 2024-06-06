@@ -1,7 +1,8 @@
 class lgn:
         """LOGIN"""
-        email = "testkpcmanual+3@gmail.com"
+        email = "testkpcmanual+1@gmail.com"
         password = "Edamama@123!"
+        emailAP = "jean@edamama.ph"
 
 
 

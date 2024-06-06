@@ -7,6 +7,8 @@ import libraries.util.apiCall.cart.cart as apiCart
 import libraries.util.apiCall.checkout.checkout as apiCheckout
 import libraries.util.apiCall.placeOrder as apiPlaceOrder
 import libraries.util.apiCall.signUp.manualSignUp as apiManualSignUp
+import libraries.util.apiCall.adminPanel.adminPanel as apiAdminPanel
+import libraries.util.response.placeOrder as rPlaceOrder
 
 @pytest.mark.api()
 @allure.step('test-001-wh-single-sku-item-single-qty-checkout-without-SF-cod')
@@ -62,3 +64,25 @@ def test_102_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Referral_Code
     
     #post-testing: Delete Registered Account to be re-used
     #apiManualSignUp.deleteNewSignedUpAcct(dTestData.rsg.strEmail_02)
+    
+    
+@pytest.mark.net()
+@pytest.mark.api()
+@allure.step('test-001-ds-sc-item-single-item-single-qty-checkout-with-sf')
+def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
+    strItemId = apiCart.getCartItemDetails(strToken)
+    apiCheckout.updateMany(strToken, strCartId, strItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    

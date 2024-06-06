@@ -4,6 +4,7 @@ baseUrl = f'https://api-v2.{env}.edamamalabs.net/api/v1'
 class lgn:
     """LOGIN"""
     userLogin = '/users/login'
+    apLogin = '/admin/login'
 
 
 
@@ -77,3 +78,9 @@ class po:
 class prf:
     """PROFILE"""
     address = '/users/address'
+    
+    
+class ap:
+    """ADMIN PANEL"""
+    def orderDetails(strOrderNumber):
+        return f'/admin/getOrder/{strOrderNumber}'

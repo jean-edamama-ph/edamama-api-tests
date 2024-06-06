@@ -48,6 +48,17 @@ def placeOrderAndGetOrderId(strToken, strCartId):
     strOrderId = rPlaceOrder.getOrderId(response)
     return strOrderId
 
+def placeOrderAndGetOrderNumber(strToken, strCartId):
+    """
+    Method: POST
+    API Endpoint: /user/orders/generate
+    Payload: cartId | selectiveCartMode | paymentMethod
+    Author: abernal_20240605
+    """
+    response = generateOrder(strToken, strCartId)
+    strOrderNumber = rPlaceOrder.getOrderNumber(response)
+    return strOrderNumber
+
 def checkout(strToken, strOrderId):
     """
     Method: POST
@@ -57,3 +68,15 @@ def checkout(strToken, strOrderId):
     """
     response = uCommon.callPost(dUrl.po.checkout, dHeaders.withToken(strToken), dPayload.po.checkout(strOrderId))
     return response
+
+def placeOrderAndGetOrderDetails(strToken, strCartId):
+    """
+    Method: POST
+    API Endpoint: /user/orders/generate
+    Payload: cartId | selectiveCartMode | paymentMethod
+    Author: abernal_20240606
+    """
+    dictAPPOrderDetails = {}
+    response = generateOrder(strToken, strCartId)
+    dictAPPOrderDetails = rPlaceOrder.getOrderDetails(response)
+    return dictAPPOrderDetails
