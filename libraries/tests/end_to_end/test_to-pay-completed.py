@@ -8,7 +8,8 @@ import libraries.util.apiCall.checkout.checkout as apiCheckout
 import libraries.util.apiCall.placeOrder as apiPlaceOrder
 import libraries.util.apiCall.signUp.manualSignUp as apiManualSignUp
 import libraries.util.apiCall.adminPanel.adminPanel as apiAdminPanel
-import libraries.util.response.placeOrder as rPlaceOrder
+import libraries.util.apiCall.sellerCenter.login as apiScLogin
+import libraries.util.apiCall.sellerCenter.shipments as apiScShipments
 
 @pytest.mark.api()
 @allure.step('test-001-wh-single-sku-item-single-qty-checkout-without-SF-cod')
@@ -671,3 +672,11 @@ def test_130_DS_SC_item_single_item_single_qty_checkout_with_SF_Edamama_Brand_vo
     apiPlaceOrder.getCart(strToken)
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
+
+
+@pytest.mark.thisTest()
+def test_SC_LOGIN_AND_ACCESS_DATA():
+    # USE THIS FUNCTION TO CONTINUE WITH SELLER CENTER APIs
+    strScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+
+    apiScShipments.getShipments(strScToken)

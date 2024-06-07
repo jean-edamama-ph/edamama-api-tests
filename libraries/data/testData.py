@@ -5,6 +5,16 @@ class lgn:
         email_03 = "testkpcmanual+3@gmail.com"
         password = "Edamama@123!"
         emailAP = "jean@edamama.ph"
+        
+        
+        
+        
+        class sc:
+                """SELLER CENTER"""
+                
+                clientID = '5ho5q2m09pevol3lnc4ev2mpt1'
+                email = 'morgan@edamama.ph'
+                password = 'Happykid123!'
 
 
 

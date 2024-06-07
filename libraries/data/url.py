@@ -1,10 +1,20 @@
 env = 'kpc'
 baseUrl = f'https://api-v2.{env}.edamamalabs.net/api/v1'
+scBaseUrl = 'https://v5.api.pre.nonprod.edamamalabs.net/api/seller/v1'
 
 class lgn:
     """LOGIN"""
     userLogin = '/users/login'
     apLogin = '/admin/login'
+
+
+
+
+    class sc:
+        """SELLER CENTER"""
+        redirectUri = 'https://www.seller.pre.edamamalabs.net'
+        authBaseUrl = 'https://edamama-pre-seller.auth.ap-southeast-1.amazoncognito.com/oauth2/authorize'
+        tokenUrl = 'https://edamama-pre-seller.auth.ap-southeast-1.amazoncognito.com/oauth2/token'
 
 
 
@@ -84,3 +94,12 @@ class ap:
     """ADMIN PANEL"""
     def orderDetails(strOrderNumber):
         return f'/admin/getOrder/{strOrderNumber}'
+
+
+
+
+
+class sc:
+    """SELLER CENTER"""
+    
+    shipments = '/shipments?'

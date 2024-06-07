@@ -277,3 +277,52 @@ def generateMongoDbConnectionString(strFilePath,strConnectionStringScheme):
         "&authSource=%24external"
     )
     return strConnectionString
+
+def callPostOAuth2(strUrl, strCode, strRedirectUri, strClientID):
+    response = requests.post(strUrl, data={'grant_type': 'authorization_code', 'code': strCode, 'redirect_uri': strRedirectUri, 'client_id': strClientID})
+    return response
+
+def setElemText(page, elem, strInput):
+    page.fill(elem, strInput)
+
+def clickElem(page, elem):
+    page.click(elem)
+
+def getUriWithAuthCode(page, strUrl):
+    page.wait_for_url(f'{strUrl}*')
+    return page.url
+
+
+
+
+
+class sc:
+    """SELLER CENTER"""
+    
+    def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
+        """
+        Objective: GET API request
+        
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: cgrapa_20230803
+        """
+        response = requests.get(f'{dUrl.scBaseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Get response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response
+
+    def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
+        """
+        Objective: POST API request
+        
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: cgrapa_20230803
+        """
+        response = requests.post(f'{dUrl.scBaseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response
