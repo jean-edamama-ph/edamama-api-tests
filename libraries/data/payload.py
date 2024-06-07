@@ -13,13 +13,13 @@ class lgn:
 class rsg:
     """REGISTRATION"""
 
-    def userSignUp(strEmail, strPassword, strFirstName, strLastName, boolIsPolicyChecked):
+    def userSignUp(strEmail, strPassword, strFirstName, strLastName, blnIsPolicyChecked):
         return {
                 "email": strEmail,
                 "password": strPassword,
                 "firstName": strFirstName,
                 "lastName": strLastName,
-                "isPolicyChecked": boolIsPolicyChecked
+                "isPolicyChecked": blnIsPolicyChecked
         }
 
 
@@ -47,7 +47,7 @@ class prf:
         strLandmark = dictAddress["landmark"]
         strBuildingNumber = dictAddress["buildingNumber"]
         strCountry = dictAddress["country"]
-        boolIsDefault = dictAddress["isDefault"]
+        blnIsDefault = dictAddress["isDefault"]
         return {
                 "firstName": strFname,
                 "lastName": strLname,
@@ -71,7 +71,7 @@ class prf:
                 "landmark": strLandmark,
                 "buildingNumber": strBuildingNumber,
                 "country": strCountry,
-                "isDefault": boolIsDefault
+                "isDefault": blnIsDefault
         }
 
 class plp:
@@ -468,31 +468,56 @@ class crt:
 class co:
     """CHECK OUT"""
     
-    def updateMany(strCartId, itemId):
-        if type(itemId) == str:
-            return {
-                    "_id": strCartId,
-                    "giftInstructions": "",
-                    "items": [
-                        {
-                        "_id": itemId,
-                        "isGiftWrapped": False,
-                        "giftNote": "",
-                        "isForCheckout": True
-                        }
-                    ]
-                }
-        elif type(itemId) == list:
-            listItems = []
-            for item in range (len(itemId)):
-                listItems.append(
-                    {
-                        "_id": itemId[item],
-                        "isGiftWrapped": False,
-                        "giftNote": "",
-                        "isForCheckout": True
+    def updateMany(strCartId, strItemId, blnIsGW = ""):
+        if type(strItemId) == str:
+            if blnIsGW == "" or blnIsGW == False:
+                return {
+                        "_id": strCartId,
+                        "giftInstructions": "",
+                        "items": [
+                            {
+                            "_id": strItemId,
+                            "isGiftWrapped": False,
+                            "giftNote": "",
+                            "isForCheckout": True
+                            }
+                        ]
                     }
-                )
+            else:
+                return {
+                        "_id": strCartId,
+                        "giftInstructions": "",
+                        "items": [
+                            {
+                            "_id": strItemId,
+                            "isGiftWrapped": True,
+                            "giftNote": "",
+                            "isForCheckout": True
+                            }
+                        ]
+                    } 
+        elif type(strItemId) == list:
+            listItems = []
+            if blnIsGW == "" or blnIsGW == False:
+                for item in range (len(strItemId)):
+                    listItems.append(
+                        {
+                            "_id": strItemId[item],
+                            "isGiftWrapped": False,
+                            "giftNote": "",
+                            "isForCheckout": True
+                        }
+                    )
+            else:
+                for item in range (len(strItemId)):
+                    listItems.append(
+                        {
+                            "_id": strItemId[item],
+                            "isGiftWrapped": True,
+                            "giftNote": "",
+                            "isForCheckout": True
+                        }
+                    )
             return {
                     "_id": strCartId,
                     "giftInstructions": "",
@@ -527,39 +552,81 @@ class po:
                 "paymentMethod": 2,
                 "billingAddress": None
             }
-    
-    def updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex, strCartId):
-        strId = listCouponDetails[intCouponDetailsIndex]["_id"]
-        listBrand = listCouponDetails[intCouponDetailsIndex]["brand"]
-        strCouponCode = listCouponDetails[intCouponDetailsIndex]["couponCode"]
-        strCouponRule = listCouponDetails[intCouponDetailsIndex]["couponRule"]
-        intCouponType = listCouponDetails[intCouponDetailsIndex]["couponType"]
-        floatDiscountAmount = listCouponDetails[intCouponDetailsIndex]["discountAmount"]
-        strIsSpecialCoupon = listCouponDetails[intCouponDetailsIndex]["isSpecialCoupon"]
-        listPaymentMethod = listCouponDetails[intCouponDetailsIndex]["paymentMethod"]
-        strTag = listCouponDetails[intCouponDetailsIndex]["tag"]
+
+    def updatePaymentWithCoupon(listCouponDetails, strCartId):
+        listVoucherStack = []
+        for item in range (len(listCouponDetails)):
+            floatDiscountAmount = listCouponDetails[item]["discountAmount"]
+            if listCouponDetails[item]["couponType"] == 1:
+                intCouponType = 1
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 2:
+                intCouponType = 2
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 3:
+                intCouponType = 3
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 4:
+                intCouponType = 4
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 5:
+                intCouponType = 5
+            elif listCouponDetails[item]["couponType"] == 6:
+                intCouponType = 6
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 7:
+                intCouponType = 7
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 8:
+                intCouponType = 8
+                blnIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            strCouponCode = listCouponDetails[item]["couponCode"]
+            strCouponRule = listCouponDetails[item]["couponRule"]
+            strTag = listCouponDetails[item]["tag"]
+            blnIsSpecialCoupon = listCouponDetails[item]["isSpecialCoupon"]
+            listBrand = listCouponDetails[item]["brand"]
+            listPaymentMethod = listCouponDetails[item]["paymentMethod"]
+            strId = listCouponDetails[item]["_id"]
+            if listCouponDetails[item]["couponType"] == 5:
+                listVoucherStack.append(
+                    {
+                        "discountAmount": floatDiscountAmount,
+                        "couponType": intCouponType,
+                        "couponCode": strCouponCode,
+                        "couponRule": strCouponRule,
+                        "tag": strTag,
+                        "isSpecialCoupon": blnIsSpecialCoupon,
+                        "brand": listBrand,
+                        "paymentMethod": listPaymentMethod,
+                        "_id": strId,
+                        "referralBeans": 300
+                    }
+                )
+            else:
+                listVoucherStack.append(
+                    {
+                        "discountAmount": floatDiscountAmount,
+                        "couponType": intCouponType,
+                        "couponCode": strCouponCode,
+                        "couponRule": strCouponRule,
+                        "tag": strTag,
+                        "isSpecialCoupon": blnIsSpecialCoupon,
+                        "isFreeShipping": blnIsFreeShipping,
+                        "brand": listBrand,
+                        "paymentMethod": listPaymentMethod,
+                        "_id": strId
+                    }
+                )
         return {
-              "coupons": [
-                {
-                "discountAmount": floatDiscountAmount,
-                "couponType": intCouponType,
-                "couponCode": strCouponCode,
-                "couponRule": strCouponRule,
-                "tag": strTag,
-                "isSpecialCoupon": strIsSpecialCoupon,
-                "brand": listBrand,
-                "paymentMethod": listPaymentMethod,
-                "_id": strId,
-                "referralBeans": 300
-                }
-            ],
-               "isBeansUsed": False,
-                "beansType": None,
-                "cartId": strCartId,
-                "freebieId": None,
-                "paymentMethod": 2,
-                "billingAddress": None 
+            "coupons": listVoucherStack,
+            "isBeansUsed": False,
+            "cartId": strCartId,
+            "freebieId": None,
+            "paymentMethod": 2,
+            "billingAddress": None
         }
+                
+        
     
     getCart = {
             "type": "buy",

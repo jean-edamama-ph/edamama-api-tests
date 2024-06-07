@@ -1,6 +1,8 @@
 class lgn:
         """LOGIN"""
         email = "testkpcmanual+1@gmail.com"
+        email_02 = "testkpcmanual+2@gmail.com"
+        email_03 = "testkpcmanual+3@gmail.com"
         password = "Edamama@123!"
         emailAP = "jean@edamama.ph"
 
@@ -43,7 +45,7 @@ class rsg:
         strPassword = "test123"
         strFirstName = "QA API"
         strLastName = "Automation Test"
-        boolIsPolicyChecked = True
+        blnIsPolicyChecked = True
 
 
 
@@ -322,6 +324,18 @@ class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""
         strReferralCode = "QA20231031080638813920-2"
         intPaymentMethod = 2
+        blnYesIsGW = True
+        
+        vouchers = {
+                "flatShipping": "TSSSHIPFEE",
+                "percentageShipping": "TSSSHIPPOFF",
+                "scBrand1": "TSSSCBRANDONE",
+                "scBrand2": "TSSSCBRANDTWO",
+                "giftCard1": "TSSGIFTONE",
+                "giftCard2": "TSSGIFTTWO",
+                "edamama": "TSSEDAVOUCH"
+        }
+
         
         whNasalAspiratorTravelCase = {
                 "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",
