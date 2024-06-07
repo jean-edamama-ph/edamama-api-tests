@@ -30,8 +30,8 @@ def test_001_wh_single_sku_item_single_qty_checkout_without_SF_cod():
 @allure.step('test-001-ds-sc-item-single-item-single-qty-checkout-with-sf')
 def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
-    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
-    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
@@ -680,3 +680,484 @@ def test_SC_LOGIN_AND_ACCESS_DATA():
     strScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
 
     apiScShipments.getShipments(strScToken)
+    
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-002-ds-sc-item-multiple-item-single-qty-checkout-with-sf')
+def test_002_ds_sc_item_multiple_item_single_qty_checkout_with_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-003-ds-sc-item-single-item-single-qty-checkout-w/o-sf')
+def test_003_ds_sc_item_single_item_single_qty_checkout_without_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
+    strItemId = apiCart.getCartItemDetails(strToken)
+    apiCheckout.updateMany(strToken, strCartId, strItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-004-ds-sc-item-multiple-item-single-qty-checkout-w/o-sf')
+def test_004_ds_sc_item_multiple_item_single_qty_checkout_without_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-005-ds-sc-item-single-item-multiple-qty-checkout-with-sf')
+def test_005_ds_sc_item_single_item_multiple_qty_checkout_with_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
+    strItemId = apiCart.getCartItemDetails(strToken)
+    apiCheckout.updateMany(strToken, strCartId, strItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-006-ds-sc-item-multiple-item-multiple-qty-checkout-with-sf')
+def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-007-ds-sc-item-single-item-multiple-qty-checkout-w/o-sf')
+def test_007_ds_sc_item_single_item_multiple_qty_checkout_without_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    strItemId = apiCart.getCartItemDetails(strToken)
+    apiCheckout.updateMany(strToken, strCartId, strItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-006-ds-sc-item-multiple-item-multiple-qty-checkout-with-sf')
+def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-009-ds-sc-item-single-item-single-qty-checkout-with-GW w/ fee + SF')
+def test_009_ds_sc_item_single_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-010-ds-sc-item-multiple-item-single-qty-checkout-with-GW w/ fee + SF')
+def test_010_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-011-ds-sc-item-single-item-single-qty-checkout-with-GW w/o fee + no SF')
+def test_011_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-012-ds-sc-item-multiple-item-single-qty-checkout-with-GW w/o fee + no SF')
+def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-013-ds-sc-item-single-item-multiple-qty-checkout-with-GW w/ fee + SF')
+def test_013_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-014-ds-sc-item-multiple-item-multiple-qty-checkout-with-GW w/ fee + SF')
+def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-015-ds-sc-item-single-item-multiple-qty-checkout-with-GW w/o fee + no SF')
+def test_015_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_no_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-016-ds-sc-item-multiple-item-multiple-qty-checkout-with-GW w/o fee + no SF')
+def test_016_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 3)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId)
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-017-ds-sc-item-single-items-multiple-qty-checkout-GW w/o fee + SF + Bean Rewards-partially-covered')
+def test_017_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-018-ds-sc-item-multiple-items-multiple-qty-checkout-GW w/o fee + SF + Bean Rewards-partially-covered')
+def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-019-ds-sc-item-single-items-multiple-qty-checkout-GW w/ fee + SF + Bean Rewards-partially-covered')
+def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-020-ds-sc-item-multiple-items-multiple-qty-checkout-GW w/ fee + SF + Bean Rewards-partially-covered')
+def test_020_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-021-ds-sc-item-single-items-multiple-qty-checkout-GW w/o fee + no SF + Bean Rewards-partially-covered')
+def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_no_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-022-ds-sc-item-multiple-items-multiple-qty-checkout-GW wo/ fee + no SF + Bean Rewards-partially-covered')
+def test_022_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF_Beans_Rewards_partially_covered():
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 3)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.getCart(strToken)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    
+    #Verify on AP
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)

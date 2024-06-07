@@ -345,6 +345,11 @@ class tss:
                 "giftCard2": "TSSGIFTTWO",
                 "edamama": "TSSEDAVOUCH"
         }
+        
+        beansType = {
+                "rewards": "Reward",
+                "credits": "Credit"
+        }
 
         
         whNasalAspiratorTravelCase = {

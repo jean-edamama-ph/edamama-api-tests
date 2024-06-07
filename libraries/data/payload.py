@@ -645,3 +645,12 @@ class po:
         return {
                 "orderId": strOrderId
             }
+        
+    def updatePaymentWithBeans(beansType, strCartId):
+        return {
+                "beansType": beansType,
+                "cartId": strCartId,
+                "freebieId": None,
+                "paymentMethod": 2,
+                "billingAddress": None
+            }
