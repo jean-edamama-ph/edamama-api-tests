@@ -45,7 +45,7 @@ class rsg:
         strPassword = "test123"
         strFirstName = "QA API"
         strLastName = "Automation Test"
-        boolIsPolicyChecked = True
+        blnIsPolicyChecked = True
 
 
 
@@ -324,7 +324,7 @@ class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""
         strReferralCode = "QA20231031080638813920-2"
         intPaymentMethod = 2
-        boolYesIsGW = True
+        blnYesIsGW = True
         
         vouchers = {
                 "flatShipping": "TSSSHIPFEE",

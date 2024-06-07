@@ -4,14 +4,14 @@ import libraries.data.url as dUrl
 import libraries.util.common as uCommon
 import libraries.util.response.checkout.checkout as rCheckOut
 
-def updateMany(strToken, strCartId, strItemId, boolIsGW = ""):
+def updateMany(strToken, strCartId, strItemId, blnIsGW = ""):
     """
     Method: POST
     API Endpoint: /user/cartItems/updateMany
     Payload: _id | giftInstructions | items
     Author: cgrapa_20240604
     """
-    uCommon.callPost(dUrl.co.updateMany, dHeaders.withToken(strToken), dPayload.co.updateMany(strCartId, strItemId, boolIsGW))
+    uCommon.callPost(dUrl.co.updateMany, dHeaders.withToken(strToken), dPayload.co.updateMany(strCartId, strItemId, blnIsGW))
 
 def getCart(strToken):
     """
