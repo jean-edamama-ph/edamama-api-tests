@@ -34,7 +34,6 @@ def compareOrderDetails(apResponse, appResponse):
     Returns: None
     Author: abernal_20240606
     """
-    breakpoint()
     assert apResponse['_id'] == appResponse['_id'], f'Order ID is not the same.'
     assert apResponse['orderNumber'] == appResponse['orderNumber'], f'Order number is not the same.'
     assert apResponse['createdAt'] == appResponse['createdAt'], f'Time created is not the same.'
