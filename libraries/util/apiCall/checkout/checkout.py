@@ -40,6 +40,5 @@ def applyVoucherAndgetCouponListDetails(strToken, strCartId, strCouponCode, intP
     """
     response = applyVoucher(strToken, strCartId, strCouponCode, intPaymentMethod)
     listCouponDetails = rCheckOut.getCouponDetails(response)
-    intCouponDetailsLength =  len(listCouponDetails)
-    return listCouponDetails, intCouponDetailsLength
+    return listCouponDetails
     

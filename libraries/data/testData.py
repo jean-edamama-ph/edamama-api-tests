@@ -328,7 +328,12 @@ class tss:
         
         vouchers = {
                 "flatShipping": "TSSSHIPFEE",
-                "percentageShipping": "TSSSHIPPOFF"
+                "percentageShipping": "TSSSHIPPOFF",
+                "scBrand1": "TSSSCBRANDONE",
+                "scBrand2": "TSSSCBRANDTWO",
+                "giftCard1": "TSSGIFTONE",
+                "giftCard2": "TSSGIFTTWO",
+                "edamama": "TSSEDAVOUCH"
         }
 
         

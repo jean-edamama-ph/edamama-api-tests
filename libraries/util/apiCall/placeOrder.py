@@ -4,7 +4,7 @@ import libraries.data.url as dUrl
 import libraries.util.common as uCommon
 import libraries.util.response.placeOrder as rPlaceOrder
 
-def updatePayment(strToken, strCartId, listCouponDetails = "", intCouponDetailsLength = ""):
+def updatePayment(strToken, strCartId, listCouponDetails = ""):
     """
     Method: POST
     API Endpoint: /user/carts/updatePayment
@@ -14,11 +14,7 @@ def updatePayment(strToken, strCartId, listCouponDetails = "", intCouponDetailsL
     if listCouponDetails == "":
         uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePayment(strCartId))
     else:
-        intCouponDetailsIndex = intCouponDetailsLength - 1
-        if listCouponDetails[intCouponDetailsIndex]["couponType"] == 5:
-            uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex,strCartId))
-        elif listCouponDetails[intCouponDetailsIndex]["couponType"] == 7 or listCouponDetails[intCouponDetailsIndex]["couponType"] == 2:
-            uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithShippingVoucher(listCouponDetails, intCouponDetailsIndex, strCartId))
+        uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithCoupon(listCouponDetails,strCartId))
     
 def getCart(strToken):
     """

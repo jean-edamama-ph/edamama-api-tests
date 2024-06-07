@@ -552,77 +552,81 @@ class po:
                 "paymentMethod": 2,
                 "billingAddress": None
             }
-    
-    def updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex, strCartId):
-        strId = listCouponDetails[intCouponDetailsIndex]["_id"]
-        listBrand = listCouponDetails[intCouponDetailsIndex]["brand"]
-        strCouponCode = listCouponDetails[intCouponDetailsIndex]["couponCode"]
-        strCouponRule = listCouponDetails[intCouponDetailsIndex]["couponRule"]
-        intCouponType = listCouponDetails[intCouponDetailsIndex]["couponType"]
-        floatDiscountAmount = listCouponDetails[intCouponDetailsIndex]["discountAmount"]
-        strIsSpecialCoupon = listCouponDetails[intCouponDetailsIndex]["isSpecialCoupon"]
-        listPaymentMethod = listCouponDetails[intCouponDetailsIndex]["paymentMethod"]
-        strTag = listCouponDetails[intCouponDetailsIndex]["tag"]
+
+    def updatePaymentWithCoupon(listCouponDetails, strCartId):
+        listVoucherStack = []
+        for item in range (len(listCouponDetails)):
+            floatDiscountAmount = listCouponDetails[item]["discountAmount"]
+            if listCouponDetails[item]["couponType"] == 1:
+                intCouponType = 1
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 2:
+                intCouponType = 2
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 3:
+                intCouponType = 3
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 4:
+                intCouponType = 4
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 5:
+                intCouponType = 5
+            elif listCouponDetails[item]["couponType"] == 6:
+                intCouponType = 6
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 7:
+                intCouponType = 7
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            elif listCouponDetails[item]["couponType"] == 8:
+                intCouponType = 8
+                boolIsFreeShipping = listCouponDetails[item]["isFreeShipping"]
+            strCouponCode = listCouponDetails[item]["couponCode"]
+            strCouponRule = listCouponDetails[item]["couponRule"]
+            strTag = listCouponDetails[item]["tag"]
+            boolIsSpecialCoupon = listCouponDetails[item]["isSpecialCoupon"]
+            listBrand = listCouponDetails[item]["brand"]
+            listPaymentMethod = listCouponDetails[item]["paymentMethod"]
+            strId = listCouponDetails[item]["_id"]
+            if listCouponDetails[item]["couponType"] == 5:
+                listVoucherStack.append(
+                    {
+                        "discountAmount": floatDiscountAmount,
+                        "couponType": intCouponType,
+                        "couponCode": strCouponCode,
+                        "couponRule": strCouponRule,
+                        "tag": strTag,
+                        "isSpecialCoupon": boolIsSpecialCoupon,
+                        "brand": listBrand,
+                        "paymentMethod": listPaymentMethod,
+                        "_id": strId,
+                        "referralBeans": 300
+                    }
+                )
+            else:
+                listVoucherStack.append(
+                    {
+                        "discountAmount": floatDiscountAmount,
+                        "couponType": intCouponType,
+                        "couponCode": strCouponCode,
+                        "couponRule": strCouponRule,
+                        "tag": strTag,
+                        "isSpecialCoupon": boolIsSpecialCoupon,
+                        "isFreeShipping": boolIsFreeShipping,
+                        "brand": listBrand,
+                        "paymentMethod": listPaymentMethod,
+                        "_id": strId
+                    }
+                )
         return {
-              "coupons": [
-                {
-                "discountAmount": floatDiscountAmount,
-                "couponType": intCouponType,
-                "couponCode": strCouponCode,
-                "couponRule": strCouponRule,
-                "tag": strTag,
-                "isSpecialCoupon": strIsSpecialCoupon,
-                "brand": listBrand,
-                "paymentMethod": listPaymentMethod,
-                "_id": strId,
-                "referralBeans": 300
-                }
-            ],
-               "isBeansUsed": False,
-                "beansType": None,
-                "cartId": strCartId,
-                "freebieId": None,
-                "paymentMethod": 2,
-                "billingAddress": None 
+            "coupons": listVoucherStack,
+            "isBeansUsed": False,
+            "cartId": strCartId,
+            "freebieId": None,
+            "paymentMethod": 2,
+            "billingAddress": None
         }
-    
-    def updatePaymentWithShippingVoucher(listCouponDetails, intCouponDetailsIndex, strCartId):
-        floatDiscountAmount = listCouponDetails[intCouponDetailsIndex]["discountAmount"]
-        if listCouponDetails[intCouponDetailsIndex]["couponType"] == 7:
-            intCouponType = 7
-        elif listCouponDetails[intCouponDetailsIndex]["couponType"] == 2:
-            intCouponType = 2
-        strCouponCode = listCouponDetails[intCouponDetailsIndex]["couponCode"]
-        strCouponRule = listCouponDetails[intCouponDetailsIndex]["couponRule"]
-        strTag = listCouponDetails[intCouponDetailsIndex]["tag"]
-        boolIsSpecialCoupon = listCouponDetails[intCouponDetailsIndex]["isSpecialCoupon"]
-        boolIsFreeShipping = listCouponDetails[intCouponDetailsIndex]["isFreeShipping"]
-        listBrand = listCouponDetails[intCouponDetailsIndex]["brand"]
-        listPaymentMethod = listCouponDetails[intCouponDetailsIndex]["paymentMethod"]
-        strId = listCouponDetails[intCouponDetailsIndex]["_id"]
-        return {
-                "coupons": [
-                            {
-                            "discountAmount": floatDiscountAmount,
-                            "couponType": intCouponType,
-                            "couponCode": strCouponCode,
-                            "couponRule": strCouponRule,
-                            "tag": strTag,
-                            "isSpecialCoupon": boolIsSpecialCoupon,
-                            "isFreeShipping": boolIsFreeShipping,
-                            "brand": listBrand,
-                            "paymentMethod": listPaymentMethod,
-                            "_id": strId
-                            }
-                        ],
-                        "isBeansUsed": False,
-                        "beansType": None,
-                        "cartId": strCartId,
-                        "freebieId": None,
-                        "paymentMethod": 2,
-                        "billingAddress": None
-            
-        }
+                
+        
     
     getCart = {
             "type": "buy",
