@@ -586,6 +586,44 @@ class po:
                 "billingAddress": None 
         }
     
+    def updatePaymentWithShippingVoucher(listCouponDetails, intCouponDetailsIndex, strCartId):
+        floatDiscountAmount = listCouponDetails[intCouponDetailsIndex]["discountAmount"]
+        if listCouponDetails[intCouponDetailsIndex]["couponType"] == 7:
+            intCouponType = 7
+        elif listCouponDetails[intCouponDetailsIndex]["couponType"] == 2:
+            intCouponType = 2
+        strCouponCode = listCouponDetails[intCouponDetailsIndex]["couponCode"]
+        strCouponRule = listCouponDetails[intCouponDetailsIndex]["couponRule"]
+        strTag = listCouponDetails[intCouponDetailsIndex]["tag"]
+        boolIsSpecialCoupon = listCouponDetails[intCouponDetailsIndex]["isSpecialCoupon"]
+        boolIsFreeShipping = listCouponDetails[intCouponDetailsIndex]["isFreeShipping"]
+        listBrand = listCouponDetails[intCouponDetailsIndex]["brand"]
+        listPaymentMethod = listCouponDetails[intCouponDetailsIndex]["paymentMethod"]
+        strId = listCouponDetails[intCouponDetailsIndex]["_id"]
+        return {
+                "coupons": [
+                            {
+                            "discountAmount": floatDiscountAmount,
+                            "couponType": intCouponType,
+                            "couponCode": strCouponCode,
+                            "couponRule": strCouponRule,
+                            "tag": strTag,
+                            "isSpecialCoupon": boolIsSpecialCoupon,
+                            "isFreeShipping": boolIsFreeShipping,
+                            "brand": listBrand,
+                            "paymentMethod": listPaymentMethod,
+                            "_id": strId
+                            }
+                        ],
+                        "isBeansUsed": False,
+                        "beansType": None,
+                        "cartId": strCartId,
+                        "freebieId": None,
+                        "paymentMethod": 2,
+                        "billingAddress": None
+            
+        }
+    
     getCart = {
             "type": "buy",
             "clearPayment": False,

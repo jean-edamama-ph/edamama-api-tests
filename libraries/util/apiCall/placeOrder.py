@@ -17,6 +17,8 @@ def updatePayment(strToken, strCartId, listCouponDetails = "", intCouponDetailsL
         intCouponDetailsIndex = intCouponDetailsLength - 1
         if listCouponDetails[intCouponDetailsIndex]["couponType"] == 5:
             uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithReferralCode(listCouponDetails, intCouponDetailsIndex,strCartId))
+        elif listCouponDetails[intCouponDetailsIndex]["couponType"] == 7 or listCouponDetails[intCouponDetailsIndex]["couponType"] == 2:
+            uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithShippingVoucher(listCouponDetails, intCouponDetailsIndex, strCartId))
     
 def getCart(strToken):
     """
