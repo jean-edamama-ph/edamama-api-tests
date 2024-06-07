@@ -346,7 +346,7 @@ class tss:
                 "edamama": "TSSEDAVOUCH"
         }
         
-        beansType = {
+        strBeansType = {
                 "rewards": "Reward",
                 "credits": "Credit"
         }

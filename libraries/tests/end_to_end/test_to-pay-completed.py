@@ -40,7 +40,7 @@ def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
+     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -700,7 +700,6 @@ def test_002_ds_sc_item_multiple_item_single_qty_checkout_with_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -721,7 +720,6 @@ def test_003_ds_sc_item_single_item_single_qty_checkout_without_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -745,7 +743,6 @@ def test_004_ds_sc_item_multiple_item_single_qty_checkout_without_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -766,7 +763,6 @@ def test_005_ds_sc_item_single_item_multiple_qty_checkout_with_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -789,8 +785,7 @@ def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
-    
-    #Verify on AP
+
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -811,7 +806,6 @@ def test_007_ds_sc_item_single_item_multiple_qty_checkout_without_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -835,7 +829,6 @@ def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -857,7 +850,6 @@ def test_009_ds_sc_item_single_item_single_qty_checkout_with_GW_with_fee_plus_SF
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -881,7 +873,6 @@ def test_010_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -903,7 +894,6 @@ def test_011_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -926,8 +916,7 @@ def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
-    
-    #Verify on AP
+
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -949,7 +938,6 @@ def test_013_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -973,7 +961,6 @@ def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -995,7 +982,6 @@ def test_015_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1019,7 +1005,6 @@ def test_016_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1036,12 +1021,11 @@ def test_017_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1060,12 +1044,11 @@ def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
-    
-    #Verify on AP
+
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1082,12 +1065,11 @@ def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
-    
-    #Verify on AP
+
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1106,12 +1088,11 @@ def test_020_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1128,12 +1109,11 @@ def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1152,12 +1132,11 @@ def test_022_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
-    apiPlaceOrder.updatePayment(strToken, strCartId, beansType = dTestData.tss.beansType["rewards"])
+    apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-    #Verify on AP
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
