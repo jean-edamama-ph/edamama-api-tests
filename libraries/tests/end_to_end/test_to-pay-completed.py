@@ -7,7 +7,8 @@ import libraries.util.apiCall.cart.cart as apiCart
 import libraries.util.apiCall.checkout.checkout as apiCheckout
 import libraries.util.apiCall.placeOrder as apiPlaceOrder
 import libraries.util.apiCall.signUp.manualSignUp as apiManualSignUp
-import libraries.util.apiCall.adminPanel.adminPanel as apiAdminPanel
+import libraries.util.apiCall.adminPanel.orders as apiApOrders
+import libraries.util.apiCall.adminPanel.shipments as apiApShipments
 import libraries.util.apiCall.sellerCenter.login as apiScLogin
 import libraries.util.apiCall.sellerCenter.shipments as apiScShipments
 
@@ -48,8 +49,8 @@ def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
     
      
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
 
     
 @pytest.mark.tssDSSC()
@@ -74,8 +75,8 @@ def test_101_DS_SC_item_single_sku_item_single_qty_checkout_with_SF_Referral_Cod
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
 
 
     
@@ -1156,7 +1157,6 @@ def test_173_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Brand_Spon
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
-@pytest.mark.thisTest()
 @allure.step('test_174_DS-SC item - single item (single quantity per SKU) checkout with GW w/ fee + SF + Brand Sponsored & Referral Code')
 def test_174_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Brand_Sponsored_Referral_Code():
     #pre-testing: Delete Registered Account to be re-used
@@ -1177,12 +1177,26 @@ def test_174_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Brand_S
     strOrderNumber = dictAPPOrderDetails["orderNumber"]
     strVendorId = dictAPPOrderDetails["orderItems"][0]["product"]["seller"]["_id"]
     
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
     strScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
     dictShipmentDetails = apiScShipments.searchAndGetShipmentDetails(strScToken, strOrderNumber, strVendorId)
     strShipmentId = dictShipmentDetails["orderShipments"][0]["_id"]
     strShipmentNum = dictShipmentDetails["orderShipments"][0]["shipmentNumber"]
-    apiScShipments.callPrintPacklist(strScToken, strShipmentId, strVendorId)
-    apiScShipments.callPrintWayBill(strScToken, strShipmentNum, strVendorId)
+    print(strShipmentNum)
+    apiScShipments.patchPrintPacklist(strScToken, strShipmentId, strVendorId)
+    apiScShipments.patchPrintWayBill(strScToken, strShipmentNum, strVendorId)
+    dictApShipmentDetailsFirstMile = apiApShipments.getApShipmentDetails(strAPToken, strShipmentNum)
+    strTrackingNumFirstMile = dictApShipmentDetailsFirstMile["milestones"][1]["trackingNumber"]
+    apiApShipments.patchMimicCourierBehavior(strAPToken, strTrackingNumFirstMile, dTestData.tss.orderShipmentSTatus["shipped"])
+    apiApShipments.patchMimicCourierBehavior(strAPToken, strTrackingNumFirstMile, dTestData.tss.orderShipmentSTatus["delivered"])
+    apiApShipments.patchPrint(strAPToken, strShipmentNum, dTestData.tss.printType["wayBill"])
+    dictApShipmentDetailsLastMile = apiApShipments.getApShipmentDetails(strAPToken, strShipmentNum)
+    strTrackingNumLastMile = dictApShipmentDetailsLastMile["milestones"][0]["trackingNumber"]
+    apiApShipments.patchMimicCourierBehavior(strAPToken, strTrackingNumLastMile, dTestData.tss.orderShipmentSTatus["shipped"])
+    apiApShipments.patchMimicCourierBehavior(strAPToken, strTrackingNumLastMile, dTestData.tss.orderShipmentSTatus["delivered"])
     
     
 
@@ -1206,8 +1220,8 @@ def test_002_ds_sc_item_multiple_item_single_qty_checkout_with_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
     
 @pytest.mark.tssDSSC()
@@ -1226,8 +1240,8 @@ def test_003_ds_sc_item_single_item_single_qty_checkout_without_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
     
 @pytest.mark.tssDSSC()
@@ -1249,8 +1263,8 @@ def test_004_ds_sc_item_multiple_item_single_qty_checkout_without_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1269,8 +1283,8 @@ def test_005_ds_sc_item_single_item_multiple_qty_checkout_with_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1292,8 +1306,8 @@ def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1312,8 +1326,8 @@ def test_007_ds_sc_item_single_item_multiple_qty_checkout_without_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1335,8 +1349,8 @@ def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
 
 
 @pytest.mark.tssDSSC()
@@ -1356,8 +1370,8 @@ def test_009_ds_sc_item_single_item_single_qty_checkout_with_GW_with_fee_plus_SF
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1379,8 +1393,8 @@ def test_010_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1400,8 +1414,8 @@ def test_011_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1423,8 +1437,8 @@ def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1444,8 +1458,8 @@ def test_013_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1467,8 +1481,8 @@ def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1488,8 +1502,8 @@ def test_015_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
     
 @pytest.mark.tssDSSC()
@@ -1511,8 +1525,8 @@ def test_016_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1532,8 +1546,8 @@ def test_017_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1555,8 +1569,8 @@ def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1576,8 +1590,8 @@ def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1599,8 +1613,8 @@ def test_020_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1620,8 +1634,8 @@ def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
@@ -1643,5 +1657,5 @@ def test_022_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
-    dictAPOrderDetails = apiAdminPanel.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
-    apiAdminPanel.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)

@@ -361,6 +361,36 @@ class tss:
                 "credits": "Credit"
         }
 
+        orderShipmentSTatus = {
+                # To Pack
+                "created": 1,
+                # Reprocessing
+                "reprocessing": 2,
+                # Processing
+                "picking": 14,
+                "picked": 3,
+                "packed": 15,
+                # To Ship
+                "readyToShip": 4,
+                "giftReadyForPickUp": 5,
+                # Shipped
+                "shipped": 6,
+                "sellerShipped": 7,
+                "giftInWarehouse": 8,
+                "giftReadyToShip": 9,
+                # Delivered
+                "delivered": 10,
+                # Cancelled
+                "cancelled": 11,
+                # Returned
+                "returned": 12,
+                # Problematic 3PL
+                "problematicCourier": 13           
+        }
+        
+        printType = {
+                "wayBill": "waybill"
+        }
         
         whNasalAspiratorTravelCase = {
                 "listName": "nosefrida-nosefrida-aspirator-w-travel-case-1575350160432",

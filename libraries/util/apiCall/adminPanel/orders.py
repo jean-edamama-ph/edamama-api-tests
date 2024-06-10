@@ -3,6 +3,7 @@ import libraries.data.payload as dPayload
 import libraries.data.url as dUrl
 import libraries.util.common as uCommon
 import libraries.util.response.placeOrder as rPlaceOrder
+import libraries.util.response.adminPanel.shipments as rApShipments
 
 def getAPOrder(strToken, strOrderNumber):
     """
@@ -48,3 +49,4 @@ def compareOrderDetails(apResponse, appResponse):
     assert apResponse['platform'] == appResponse['platform'], f'Platform is not the same.'
     assert apResponse['totalQuantity'] == appResponse['totalQuantity'], f'Total Quantity is not the same.'
     assert apResponse['user'] == appResponse['user'], f'User details is not the same.'
+        

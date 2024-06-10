@@ -60,6 +60,20 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
     assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
     return response
 
+def callPatch(strUrl, strHeaders, strPayload = "", strAuth = ""):
+    """
+    Objective: POST API request
+    
+    Params: strUrl | strHeaders | strPayload | strAuth
+    Returns: response
+    Author: cgrapa_20230803
+    """
+    response = requests.patch(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+    statusCode = getStatusCode(response)
+    responseData = getResponseData(response)
+    assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+    return response
+
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
     """
     Objective: POST API request and validate response code
@@ -340,4 +354,52 @@ class sc:
         responseData = getResponseData(response)
         assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
         return response
+
+
+
+
+
+class asc:
+    """ADMIN PANEL | SELLER CENTER"""
+    
+    def callGet(strUrl, strHeaders, strParams = "", strAuth = ""):
+        """
+        Objective: PATCH API request
         
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: jatregenio_20240610
+        """
+        response = requests.get(f'{dUrl.scAdminBaseUrl}{strUrl}', headers=strHeaders, params=strParams, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Get response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response
+
+    def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
+        """
+        Objective: POST API request
+        
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: cgrapa_20230803
+        """
+        response = requests.post(f'{dUrl.scAdminBaseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response
+    
+    def callPatch(strUrl, strHeaders, strParams = "", strPayload = "", strAuth = ""):
+        """
+        Objective: PATCH API request
+        
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: jatregenio_20240610
+        """
+        response = requests.patch(f'{dUrl.scAdminBaseUrl}{strUrl}', headers=strHeaders, params=strParams,  json=strPayload, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response

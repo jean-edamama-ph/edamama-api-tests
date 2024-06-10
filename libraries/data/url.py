@@ -1,6 +1,7 @@
 env = 'kpc'
 baseUrl = f'https://api-v2.{env}.edamamalabs.net/api/v1'
 scBaseUrl = 'https://v5.api.pre.nonprod.edamamalabs.net/api/seller/v1'
+scAdminBaseUrl = 'https://v5.api.pre.nonprod.edamamalabs.net/api/admin/v1'
 
 class lgn:
     """LOGIN"""
@@ -94,6 +95,15 @@ class ap:
     """ADMIN PANEL"""
     def orderDetails(strOrderNumber):
         return f'/admin/getOrder/{strOrderNumber}'
+    
+    def shipments(strShipmentNumber):
+        return f'/shipments/{strShipmentNumber}'
+    
+    def mimicCourierBehavior(strTrackingNum):
+        return f'/shipments/{strTrackingNum}/mimicCourierBehavior'
+    
+    def print(strShipmentNum):
+        return f'/shipments/{strShipmentNum}/print?'
 
 
 

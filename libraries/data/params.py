@@ -10,8 +10,7 @@ curatedTypesSpotlight = {
 
 class sc:
     """SELLER CENTER"""
-    
-    # change this portion to def if vendorID needs to be dynamic
+
     def shipments (strVendorId):
         return {
                 "limit": 1,
@@ -26,4 +25,15 @@ class sc:
                 "generalStatus": 1,
                 "search": strOrderId,
                 "vendorId": strVendorId
+        }
+
+
+
+
+
+class asc:
+    """ADMIN PANEL | SELLER CENTER"""
+    def print(strPrintType):
+        return {
+            "printType": strPrintType
         }

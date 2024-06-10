@@ -39,10 +39,24 @@ def searchAndGetShipmentDetails(strToken, strOrderNum, strVendorId):
     dictShipmentDetails = rShipment.getShipmentDetails(response)
     return dictShipmentDetails
 
-def callPrintPacklist(strToken, strShipmentId, strVendorId):
+def patchPrintPacklist(strToken, strShipmentId, strVendorId):
+    """
+    Method: Update Order to Print Packlist
+    API Endpoint: /shipments/printPacklists
+    Params: strToken | strShipmentId | strVendorId 
+    Response: response
+    Author: jatregenio_20240610
+    """
     response = uCommon.sc.callPatch(dUrl.sc.printPacklists, dHeaders.withToken(strToken), dPayload.sc.printPackList(strShipmentId, strVendorId))
     return response
 
-def callPrintWayBill(strToken, strShipmentNumber, strVendorId):
+def patchPrintWayBill(strToken, strShipmentNumber, strVendorId):
+    """
+    Method: Update Order to Print Waybill
+    API Endpoint: /shipments/{strShipmentNumber}/printWaybill
+    Params: strToken | strShipmentNumber | strVendorId 
+    Response: response
+    Author: jatregenio_20240610
+    """
     response = uCommon.sc.callPatch(dUrl.sc.printWayBill(strShipmentNumber), dHeaders.withToken(strToken), dPayload.sc.printWaybill(strShipmentNumber, strVendorId))
     return response

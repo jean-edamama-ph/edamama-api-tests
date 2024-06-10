@@ -650,6 +650,8 @@ class po:
 
 
 class sc:
+    """SELLER CENTER"""
+    
     def printPackList(strShipmentId, strVendorId):
         return {
               "orderShipmentIds": [
@@ -662,4 +664,16 @@ class sc:
         return {
             "shipmentNumber": strShipmentNumber,
             "vendorId": strVendorId
+        }
+
+
+
+
+
+class ap:
+    """ADMIN PANEL"""
+    
+    def mimicCourierBehavior(strStatus):
+        return{
+            "status": strStatus
         }
