@@ -452,3 +452,11 @@ class tss:
                 "prodId": "664abc3486fce3d2021271cd",
                 "variantId": "664abc478206beb7c2c1321d"
         }
+
+
+class ap:
+        """ADMIN PANEL"""
+        maxCapPercentOrig = "15"
+        maxCapPHPOrig = "450"
+        maxCapPercentUpdate = "100"
+        maxCapPHPUpdate = "10000"

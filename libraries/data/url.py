@@ -94,6 +94,7 @@ class ap:
     """ADMIN PANEL"""
     def orderDetails(strOrderNumber):
         return f'/admin/getOrder/{strOrderNumber}'
+    rewardsCap = '/admin/rewardsCapping'
 
 
 

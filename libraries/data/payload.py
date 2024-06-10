@@ -638,7 +638,7 @@ class po:
         
     def updatePaymentWithBeans(strBeansType, strCartId):
         return {
-                "strBeansType": strBeansType,
+                "beansType": strBeansType,
                 "cartId": strCartId,
                 "freebieId": None,
                 "paymentMethod": 2,
@@ -662,4 +662,16 @@ class sc:
         return {
             "shipmentNumber": strShipmentNumber,
             "vendorId": strVendorId
+        }
+        
+        
+
+
+
+class ap:
+    """ADMIN PANEL"""
+    def updateRewardsCap(strMaxPercentCap, strMaxPHPCap):
+        return {
+            "newRewardsPercentageCap": strMaxPercentCap,
+            "newRewardsAmountCap": strMaxPHPCap
         }
