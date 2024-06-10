@@ -103,3 +103,6 @@ class sc:
     """SELLER CENTER"""
     
     shipments = '/shipments?'
+    printPacklists = '/shipments/printPacklists'
+    def printWayBill(strShipmentNumber):
+        return f'/shipments/{strShipmentNumber}/printWaybill'

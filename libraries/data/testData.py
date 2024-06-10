@@ -329,6 +329,16 @@ class plp:
 
 
 
+class vnd:
+        """VENDOR IDs"""
+        sellerCenter = {
+                "bigBruteId": "6195a9d49847e1000de1332"
+        }
+
+
+
+
+
 
 class tss:
         """TRUE SPLIT SHIPMENT TD FOR E2E"""

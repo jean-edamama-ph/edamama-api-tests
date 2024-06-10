@@ -326,3 +326,18 @@ class sc:
         responseData = getResponseData(response)
         assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
         return response
+    
+    def callPatch(strUrl, strHeaders, strPayload = "", strAuth = ""):
+        """
+        Objective: PATCH API request
+        
+        Params: strUrl | strHeaders | strParams | strAuth
+        Returns: response
+        Author: jatregenio_20240610
+        """
+        response = requests.patch(f'{dUrl.scBaseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+        statusCode = getStatusCode(response)
+        responseData = getResponseData(response)
+        assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+        return response
+        
