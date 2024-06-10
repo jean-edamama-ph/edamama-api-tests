@@ -1552,7 +1552,7 @@ def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-019-ds-sc-item-single-items-multiple-qty-checkout-GW w/ fee + SF + Bean Rewards-partially-covered')
 def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_SF_Beans_Rewards_partially_covered():
-    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password1)
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
