@@ -471,31 +471,21 @@ class co:
     def updateMany(strCartId, strItemId, blnIsGW = ""):
         if type(strItemId) == str:
             if blnIsGW == "" or blnIsGW == False:
-                return {
-                        "_id": strCartId,
-                        "giftInstructions": "",
-                        "items": [
-                            {
-                            "_id": strItemId,
-                            "isGiftWrapped": False,
-                            "giftNote": "",
-                            "isForCheckout": True
-                            }
-                        ]
-                    }
+                blnIsGiftWrapped = False
             else:
-                return {
-                        "_id": strCartId,
-                        "giftInstructions": "",
-                        "items": [
-                            {
-                            "_id": strItemId,
-                            "isGiftWrapped": True,
-                            "giftNote": "",
-                            "isForCheckout": True
-                            }
-                        ]
-                    } 
+                blnIsGiftWrapped = True
+            return {
+                    "_id": strCartId,
+                    "giftInstructions": "",
+                    "items": [
+                        {
+                        "_id": strItemId,
+                        "isGiftWrapped": blnIsGiftWrapped,
+                        "giftNote": "",
+                        "isForCheckout": True
+                        }
+                    ]
+                } 
         elif type(strItemId) == list:
             listItems = []
             if blnIsGW == "" or blnIsGW == False:

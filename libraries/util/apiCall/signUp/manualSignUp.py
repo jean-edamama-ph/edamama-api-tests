@@ -26,7 +26,7 @@ def postAndVerifyUserSignUp(strEmail, strPassword, strFname, strLname, blnIsPoli
     postUserSignUp(strEmail, strPassword, strFname, strLname, blnIsPolicyChecked)
     mUserAccount.verifyUserAccount(strEmail)
     
-def deleteNewSignedUpAcct(strEmail):
+def deleteRegisteredAcct(strEmail):
     """
     Objective: Register and verify newly signed up account
     Param: strEmail | strPassword | strFname | strLname | blnIsPolicyChecked
