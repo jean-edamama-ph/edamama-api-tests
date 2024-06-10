@@ -644,3 +644,22 @@ class po:
                 "paymentMethod": 2,
                 "billingAddress": None
             }
+
+
+
+
+
+class sc:
+    def printPackList(strShipmentId, strVendorId):
+        return {
+              "orderShipmentIds": [
+                strShipmentId
+            ],
+            "vendorId": strVendorId
+        }
+    
+    def printWaybill(strShipmentNumber, strVendorId):
+        return {
+            "shipmentNumber": strShipmentNumber,
+            "vendorId": strVendorId
+        }

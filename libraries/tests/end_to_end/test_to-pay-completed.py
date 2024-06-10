@@ -1172,15 +1172,26 @@ def test_174_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Brand_S
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
-    strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
-    apiPlaceOrder.checkout(strToken, strOrderId)
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails["_id"])
+    strOrderNumber = dictAPPOrderDetails["orderNumber"]
+    strVendorId = dictAPPOrderDetails["orderItems"][0]["product"]["seller"]["_id"]
+    
+    strScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+    dictShipmentDetails = apiScShipments.searchAndGetShipmentDetails(strScToken, strOrderNumber, strVendorId)
+    strShipmentId = dictShipmentDetails["orderShipments"][0]["_id"]
+    strShipmentNum = dictShipmentDetails["orderShipments"][0]["shipmentNumber"]
+    apiScShipments.callPrintPacklist(strScToken, strShipmentId, strVendorId)
+    apiScShipments.callPrintWayBill(strScToken, strShipmentNum, strVendorId)
+    
+    
 
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
 @allure.step('test-002-ds-sc-item-multiple-item-single-qty-checkout-with-sf')
 def test_002_ds_sc_item_multiple_item_single_qty_checkout_with_sf():
-    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
