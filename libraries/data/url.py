@@ -104,6 +104,7 @@ class ap:
     
     def print(strShipmentNum):
         return f'/shipments/{strShipmentNum}/print?'
+    rewardsCap = '/admin/rewardsCapping'
 
 
 

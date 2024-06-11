@@ -638,7 +638,7 @@ class po:
         
     def updatePaymentWithBeans(strBeansType, strCartId):
         return {
-                "strBeansType": strBeansType,
+                "beansType": strBeansType,
                 "cartId": strCartId,
                 "freebieId": None,
                 "paymentMethod": 2,
@@ -667,6 +667,8 @@ class sc:
         }
 
 
+        
+        
 
 
 
@@ -676,4 +678,9 @@ class ap:
     def mimicCourierBehavior(strStatus):
         return{
             "status": strStatus
+        }
+    def updateRewardsCap(strMaxPercentCap, strMaxPHPCap):
+        return {
+            "newRewardsPercentageCap": strMaxPercentCap,
+            "newRewardsAmountCap": strMaxPHPCap
         }
