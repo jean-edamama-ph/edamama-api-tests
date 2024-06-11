@@ -3,7 +3,7 @@ from libraries.util.response.productListing import errorLog
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
-import requests, allure, sys, pprint
+import requests, allure, sys, pprint, logging
 
 import libraries.data.url as dUrl
 
@@ -319,6 +319,23 @@ def clickElem(page, elem):
 def getUriWithAuthCode(page, strUrl):
     page.wait_for_url(f'{strUrl}*')
     return page.url
+
+def log(intStatus, strMsg):
+    """ 
+    Objective: Perform log info
+    param intStatus: 0 | 1 | 2
+    param strMsg: Message
+    returns: None
+    Author: ccapistrano_20230327
+    """
+    if intStatus == 1:
+        strStatus = 'PASS:'
+    elif intStatus == 0:
+        strStatus = 'INFO:'
+    elif intStatus == 2:
+        assert 1 == 0, strMsg
+    # logging.warning(msg=f'{strStatus} {strMsg}')
+    logging.info(msg=f'{strStatus} | {strMsg}')
 
 
 

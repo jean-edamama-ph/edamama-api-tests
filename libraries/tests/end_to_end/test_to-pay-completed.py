@@ -11,6 +11,7 @@ import libraries.util.apiCall.adminPanel.orders as apiApOrders
 import libraries.util.apiCall.adminPanel.shipments as apiApShipments
 import libraries.util.apiCall.sellerCenter.login as apiScLogin
 import libraries.util.apiCall.sellerCenter.shipments as apiScShipments
+import libraries.util.common as uCommon
 
 def test_SC_LOGIN_AND_ACCESS_DATA():
     # USE THIS FUNCTION TO CONTINUE WITH SELLER CENTER APIs
@@ -21,14 +22,25 @@ def test_SC_LOGIN_AND_ACCESS_DATA():
 @pytest.mark.api()
 @allure.step('test-001-wh-single-sku-item-single-qty-checkout-without-SF-cod')
 def test_001_wh_single_sku_item_single_qty_checkout_without_SF_cod():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.whNasalAspiratorTravelCase["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.whNasalAspiratorTravelCase["prodId"], dTestData.tss.whNasalAspiratorTravelCase["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -36,18 +48,29 @@ def test_001_wh_single_sku_item_single_qty_checkout_without_SF_cod():
 @pytest.mark.api()
 @allure.step('test-001-ds-sc-item-single-item-single-qty-checkout-with-sf')
 def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
-     
+    uCommon.log(0, 'Step 7: Login to Admin Panel and validate order details')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -59,21 +82,33 @@ def test_001_ds_sc_item_single_item_single_qty_checkout_with_sf():
 @pytest.mark.api()
 @allure.step('test-002-ds-sc-item-multiple-item-single-qty-checkout-with-sf')
 def test_002_ds_sc_item_multiple_item_single_qty_checkout_with_sf():
-    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    uCommon.log(0, 'Step 1: Login to edamama')
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -102,21 +137,33 @@ def test_003_ds_sc_item_single_item_single_qty_checkout_without_sf():
 @pytest.mark.api()
 @allure.step('test-004-ds-sc-item-multiple-item-single-qty-checkout-w/o-sf')
 def test_004_ds_sc_item_multiple_item_single_qty_checkout_without_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -125,18 +172,32 @@ def test_004_ds_sc_item_multiple_item_single_qty_checkout_without_sf():
 @pytest.mark.api()
 @allure.step('test-005-ds-sc-item-single-item-multiple-qty-checkout-with-sf')
 def test_005_ds_sc_item_single_item_multiple_qty_checkout_with_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 7: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 8: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -145,21 +206,33 @@ def test_005_ds_sc_item_single_item_multiple_qty_checkout_with_sf():
 @pytest.mark.api()
 @allure.step('test-006-ds-sc-item-multiple-item-multiple-qty-checkout-with-sf')
 def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -168,41 +241,67 @@ def test_006_ds_sc_item_multiple_item_multiple_qty_checkout_with_sf():
 @pytest.mark.api()
 @allure.step('test-007-ds-sc-item-single-item-multiple-qty-checkout-w/o-sf')
 def test_007_ds_sc_item_single_item_multiple_qty_checkout_without_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 4:Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 7: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 8: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
-@allure.step('test-006-ds-sc-item-multiple-item-multiple-qty-checkout-without-sf')
+@allure.step('test-008-ds-sc-item-multiple-item-multiple-qty-checkout-without-sf')
 def test_008_ds_sc_item_multiple_item_multiple_qty_checkout_without_sf():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
 
@@ -211,19 +310,33 @@ def test_008_ds_sc_item_multiple_item_multiple_qty_checkout_without_sf():
 @pytest.mark.api()
 @allure.step('test-009-ds-sc-item-single-item-single-qty-checkout-with-GW w/ fee + SF')
 def test_009_ds_sc_item_single_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 7: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 8: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -232,21 +345,33 @@ def test_009_ds_sc_item_single_item_single_qty_checkout_with_GW_with_fee_plus_SF
 @pytest.mark.api()
 @allure.step('test-010-ds-sc-item-multiple-item-single-qty-checkout-with-GW w/ fee + SF')
 def test_010_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -255,19 +380,33 @@ def test_010_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
 @pytest.mark.api()
 @allure.step('test-011-ds-sc-item-single-item-single-qty-checkout-with-GW w/o fee + no SF')
 def test_011_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -276,21 +415,33 @@ def test_011_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus
 @pytest.mark.api()
 @allure.step('test-012-ds-sc-item-multiple-item-single-qty-checkout-with-GW w/o fee + no SF')
 def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -299,19 +450,33 @@ def test_012_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-013-ds-sc-item-single-item-multiple-qty-checkout-with-GW w/ fee + SF')
 def test_013_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -320,21 +485,33 @@ def test_013_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
 @pytest.mark.api()
 @allure.step('test-014-ds-sc-item-multiple-item-multiple-qty-checkout-with-GW w/ fee + SF')
 def test_014_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -343,19 +520,33 @@ def test_014_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
 @pytest.mark.api()
 @allure.step('test-015-ds-sc-item-single-item-multiple-qty-checkout-with-GW w/o fee + no SF')
 def test_015_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_no_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -364,21 +555,33 @@ def test_015_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-016-ds-sc-item-multiple-item-multiple-qty-checkout-with-GW w/o fee + no SF')
 def test_016_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -387,19 +590,33 @@ def test_016_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-017-ds-sc-item-single-items-multiple-qty-checkout-GW w/o fee + SF + Bean Rewards-partially-covered')
 def test_017_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -408,21 +625,33 @@ def test_017_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-018-ds-sc-item-multiple-items-multiple-qty-checkout-GW w/o fee + SF + Bean Rewards-partially-covered')
 def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -431,19 +660,33 @@ def test_018_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-019-ds-sc-item-single-items-multiple-qty-checkout-GW w/ fee + SF + Bean Rewards-partially-covered')
 def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
 
+    uCommon.log(0, 'Step 7: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 8: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -452,21 +695,33 @@ def test_019_ds_sc_item_single_item_multiple_qty_checkout_with_GW_with_fee_plus_
 @pytest.mark.api()
 @allure.step('test-020-ds-sc-item-multiple-items-multiple-qty-checkout-GW w/ fee + SF + Bean Rewards-partially-covered')
 def test_020_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -475,19 +730,33 @@ def test_020_ds_sc_item_multiple_item_single_qty_checkout_with_GW_with_fee_plus_
 @pytest.mark.api()
 @allure.step('test-021-ds-sc-item-single-items-multiple-qty-checkout-GW w/o fee + no SF + Bean Rewards-partially-covered')
 def test_021_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_plus_no_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 7: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 8: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
@@ -496,21 +765,33 @@ def test_021_ds_sc_item_single_item_multiple_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.api()
 @allure.step('test-022-ds-sc-item-multiple-items-multiple-qty-checkout-GW wo/ fee + no SF + Bean Rewards-partially-covered')
 def test_022_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_plus_no_SF_Beans_Rewards_partially_covered():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, strBeansType = dTestData.tss.strBeansType["rewards"])
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
       
@@ -1077,23 +1358,35 @@ def test_052_ds_sc_item_multiple_item_multiple_qty_checkout_with_SF_plus_Edamama
 @pytest.mark.api()
 @allure.step('test_101_DS-SC_item-single_sku_item_single_qty_checkout_with_SF+Referral_Code')
 def test_101_DS_SC_item_single_sku_item_single_qty_checkout_with_SF_Referral_Code():
-    #pre-test: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
-    strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     
+    uCommon.log(0, 'Step 7: Place Order')
     dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
     
+    uCommon.log(0, 'Step 8: Login to Admin Panel and validate order details')
     strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
     dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
@@ -1104,21 +1397,32 @@ def test_101_DS_SC_item_single_sku_item_single_qty_checkout_with_SF_Referral_Cod
 @pytest.mark.api()
 @allure.step('test_102_DS-SC item_multiple_items_single_qty_checkout_with_SF+Referral_Code')
 def test_102_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Referral_Code():
-    #pre-test: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_02)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_02, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1127,42 +1431,66 @@ def test_102_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Referral_Code
 @pytest.mark.api()
 @allure.step('test_103_DS-SC item_single_item_single_qty_checkout_without_SF+Referral_Code')
 def test_103_DS_SC_item_single_item_single_qty_checkout_without_SF_Referral_Code():
-    #pre-test: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_03)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_03, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
-
+    
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
 @allure.step('test_104_DS-SC item - multiple items (single quantity per SKU) checkout without SF + Referral Code')
 def test_104_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Referral_Code():
-    #pre-test: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_04)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_04, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1171,19 +1499,32 @@ def test_104_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Referral_C
 @pytest.mark.api()
 @allure.step('test_105_DS-SC item - single item (single quantity per SKU) checkout with GW w/ fee + SF + Referral Code')
 def test_105_DS_SC_item_single_item_single_qty_checkout_with_GW_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_05)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_05, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId) 
 
@@ -1192,21 +1533,32 @@ def test_105_DS_SC_item_single_item_single_qty_checkout_with_GW_SF_Referral_Code
 @pytest.mark.api()
 @allure.step('test_106_DS-SC item - multiple items (single quantity per SKU) checkout GW w/ fee + SF + Referral Code')
 def test_106_DS_SC_item_multiple_items_single_qty_checkout_with_GW_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_06)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_06, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)  
 
@@ -1215,19 +1567,32 @@ def test_106_DS_SC_item_multiple_items_single_qty_checkout_with_GW_fee_SF_Referr
 @pytest.mark.api()
 @allure.step('test_107_DS-SC item - single item (single quantity per SKU) checkout with GW w/o fee + SF + Referral Code')
 def test_107_DS_SC_item_single_item_single_qty_checkout_without_GW_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_07)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_07, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1236,21 +1601,32 @@ def test_107_DS_SC_item_single_item_single_qty_checkout_without_GW_fee_SF_Referr
 @pytest.mark.api()
 @allure.step('test_108_DS-SC item - multiple items (single quantity per SKU) checkout GW w/o fee + SF + Referral Code')
 def test_108_DS_SC_item_multiple_items_single_qty_checkout_without_GW_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_08)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_08, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1259,19 +1635,32 @@ def test_108_DS_SC_item_multiple_items_single_qty_checkout_without_GW_fee_SF_Ref
 @pytest.mark.api()
 @allure.step('test_109_DS-SC item - single item (single quantity per SKU) checkout with GW w/o fee + no SF + Referral Code')
 def test_109_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_no_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_09)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_09, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1280,21 +1669,32 @@ def test_109_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_no_SF_Ref
 @pytest.mark.api()
 @allure.step('test_110_DS-SC item - multiple items (single quantity per SKU) checkout GW w/o fee + no SF + Referral Code')
 def test_110_DS_SC_item_multiple_items_single_qty_checkout_GW_no_fee_no_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_10)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_10, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1303,19 +1703,32 @@ def test_110_DS_SC_item_multiple_items_single_qty_checkout_GW_no_fee_no_SF_Refer
 @pytest.mark.api()
 @allure.step('test_111_DS-SC item - single item (multiple quantities per SKU) checkout with SF + Referral Code')
 def test_111_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_11)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_11, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1324,21 +1737,32 @@ def test_111_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Referral_Code(
 @pytest.mark.api()
 @allure.step('test_112_DS-SC item - multiple items (multiple quantities per SKU) checkout with SF + Referral Code')
 def test_112_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_12)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_12, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 5)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1347,19 +1771,32 @@ def test_112_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Referral_Co
 @pytest.mark.api()
 @allure.step('test_113_DS-SC item - single item (multiple quantities per SKU) checkout without SF + Referral Code')
 def test_113_DS_SC_item_single_item_multiple_qty_checkout_without_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_13)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_13, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item on cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1368,21 +1805,32 @@ def test_113_DS_SC_item_single_item_multiple_qty_checkout_without_SF_Referral_Co
 @pytest.mark.api()
 @allure.step('test_114_DS-SC item - multiple items (multiple quantities per SKU) checkout without SF + Referral Code')
 def test_114_DS_SC_item_multiple_items_multiple_qty_checkout_without_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_14)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_14, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1391,19 +1839,32 @@ def test_114_DS_SC_item_multiple_items_multiple_qty_checkout_without_SF_Referral
 @pytest.mark.api()
 @allure.step('test_115_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/ fee + SF + Referral Code')
 def test_115_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_15)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_15, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 3)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1412,21 +1873,32 @@ def test_115_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Refer
 @pytest.mark.api()
 @allure.step('test_116_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/ fee + SF + Referral Code')
 def test_116_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_16)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_16, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 5)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1435,19 +1907,32 @@ def test_116_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Referra
 @pytest.mark.api()
 @allure.step('test_117_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/o fee + SF + Referral Code')
 def test_117_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_17)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_17, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 18)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1456,21 +1941,32 @@ def test_117_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_SF_Refe
 @pytest.mark.api()
 @allure.step('test_118_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/o fee + SF + Referral Code')
 def test_118_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_18)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_18, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 8)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1479,19 +1975,32 @@ def test_118_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Referr
 @pytest.mark.api()
 @allure.step('test_119_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/o fee + no SF + Referral Code')
 def test_119_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_no_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_19)
 
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_19, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1500,21 +2009,32 @@ def test_119_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_no_SF_R
 @pytest.mark.api()
 @allure.step('test_120_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/o fee + no SF + Referral Code')
 def test_120_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_20)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_20, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1523,16 +2043,29 @@ def test_120_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Referr
 @pytest.mark.api()
 @allure.step('test_121_DS-SC item - single item (single quantity per SKU) checkout with SF + Shipping voucher')
 def test_121_DS_SC_item_single_item_single_qty_checkout_with_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1541,18 +2074,29 @@ def test_121_DS_SC_item_single_item_single_qty_checkout_with_SF_Shipping_voucher
 @pytest.mark.api()
 @allure.step('test_122_DS-SC item - multiple items (single quantity per SKU) checkout with SF + Shipping voucher')
 def test_122_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout items on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
     
@@ -1561,16 +2105,29 @@ def test_122_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Shipping_vouc
 @pytest.mark.api()
 @allure.step('test_123_DS-SC item - single item (single quantity per SKU) checkout with GW w/ fee + SF + Shipping voucher')
 def test_123_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1579,18 +2136,29 @@ def test_123_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Shippin
 @pytest.mark.api()
 @allure.step('test_124_DS-SC item - multiple items (single quantity per SKU) checkout GW w/ fee + SF + Shipping voucher')
 def test_124_DS_SC_item_multiple_items_single_qty_checkout_GW_w_fee_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1599,16 +2167,29 @@ def test_124_DS_SC_item_multiple_items_single_qty_checkout_GW_w_fee_SF_Shipping_
 @pytest.mark.api()
 @allure.step('test_125_DS-SC item - single item (multiple quantities per SKU) checkout with SF + Shipping voucher')
 def test_125_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1617,18 +2198,29 @@ def test_125_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Shipping_vouch
 @pytest.mark.api()
 @allure.step('test_126_DS-SC item - multiple items (multiple quantities per SKU) checkout with SF + Shipping voucher')
 def test_126_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1637,16 +2229,29 @@ def test_126_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Shipping_vo
 @pytest.mark.api()
 @allure.step('test_127_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/ fee + Shipping voucher')
 def test_127_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["flatShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1655,16 +2260,29 @@ def test_127_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_Shipping
 @pytest.mark.api()
 @allure.step('test_128_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/ fee + SF + Shipping voucher')
 def test_128_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 4)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["percentageShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1673,18 +2291,29 @@ def test_128_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Shipp
 @pytest.mark.api()
 @allure.step('test_129_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/ fee + SF + Shipping voucher')
 def test_129_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Shipping_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["percentageShipping"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1693,17 +2322,30 @@ def test_129_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Shippin
 @pytest.mark.api()
 @allure.step('test_130_DS-SC item - single item (single quantity per SKU) checkout with SF + Edamama & Brand voucher')
 def test_130_DS_SC_item_single_item_single_qty_checkout_with_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1712,19 +2354,30 @@ def test_130_DS_SC_item_single_item_single_qty_checkout_with_SF_Edamama_Brand_vo
 @pytest.mark.api()
 @allure.step('test_131_DS-SC item - multiple items (single quantity per SKU) checkout with SF + Edamama & Brand voucher')
 def test_131_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1733,17 +2386,30 @@ def test_131_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Edamama_Brand
 @pytest.mark.api()
 @allure.step('test_132_DS-SC item - single item (single quantity per SKU) checkout without SF + Edamama & Brand voucher')
 def test_132_DS_SC_item_single_item_single_qty_checkout_without_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1752,19 +2418,30 @@ def test_132_DS_SC_item_single_item_single_qty_checkout_without_SF_Edamama_Brand
 @pytest.mark.api()
 @allure.step('test_133_DS-SC item - multiple items (single quantity per SKU) checkout without SF + Edamama & Brand voucher')
 def test_133_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1773,37 +2450,62 @@ def test_133_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Edamama_Br
 @pytest.mark.api()
 @allure.step('test_134_DS-SC item - single item (single quantity per SKU) checkout with GW w/ fee + SF + Edamama & Brand voucher')
 def test_134_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
+
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
 @allure.step('test_135_DS-SC item - multiple items (single quantity per SKU) checkout GW w/ fee + SF + Edamama & Brand voucher')
 def test_135_DS_SC_item_multiple_items_single_qty_checkout_GW_w_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1812,17 +2514,30 @@ def test_135_DS_SC_item_multiple_items_single_qty_checkout_GW_w_fee_SF_Edamama_B
 @pytest.mark.api()
 @allure.step('test_136_DS-SC item - single item (single quantity per SKU) checkout with GW w/o fee + SF + Edamama & Brand voucher')
 def test_136_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1831,37 +2546,62 @@ def test_136_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_SF_Edamam
 @pytest.mark.api()
 @allure.step('test_137_DS-SC_item_multiple_items_single_qty_checkout_GW w/o fee + SF + Edamama & Brand voucher')
 def test_137_DS_SC_item_multiple_items_single_qty_checkout_GW_no_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductP["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductP["prodId"], dTestData.tss.scTssScProductP["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
+
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
 @allure.step('test_138_DS-SC_item_single_item_single_qty_checkout_with GW w/o fee + no SF + Edamama & Brand voucher')
 def test_138_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_no_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1870,19 +2610,30 @@ def test_138_DS_SC_item_single_item_single_qty_checkout_with_GW_no_fee_no_SF_Eda
 @pytest.mark.api()
 @allure.step('test_139_DS-SC item - multiple items (single quantity per SKU) checkout GW w/o fee + no SF + Edamama & Brand voucher')
 def test_139_DS_SC_item_multiple_items_single_qty_checkout_GW_no_fee_no_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1891,17 +2642,30 @@ def test_139_DS_SC_item_multiple_items_single_qty_checkout_GW_no_fee_no_SF_Edama
 @pytest.mark.api()
 @allure.step('test_140_DS-SC item - single item (multiple quantities per SKU) checkout with SF + Edamama & Brand voucher')
 def test_140_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1910,19 +2674,30 @@ def test_140_DS_SC_item_single_item_multiple_qty_checkout_with_SF_Edamama_Brand_
 @pytest.mark.api()
 @allure.step('test_141_DS-SC item - multiple items (multiple quantities per SKU) checkout with SF + Edamama & Brand voucher')
 def test_141_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1931,17 +2706,30 @@ def test_141_DS_SC_item_multiple_items_multiple_qty_checkout_with_SF_Edamama_Bra
 @pytest.mark.api()
 @allure.step('test_142_DS-SC item - single item (multiple quantities per SKU) checkout without SF + Edamama & Brand voucher')
 def test_142_DS_SC_item_single_item_multiple_qty_checkout_without_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1950,19 +2738,30 @@ def test_142_DS_SC_item_single_item_multiple_qty_checkout_without_SF_Edamama_Bra
 @pytest.mark.api()
 @allure.step('test_143_DS-SC item - multiple items (multiple quantities per SKU) checkout without SF + Edamama & Brand voucher')
 def test_143_DS_SC_item_multiple_items_multiple_qty_checkout_without_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1971,17 +2770,30 @@ def test_143_DS_SC_item_multiple_items_multiple_qty_checkout_without_SF_Edamama_
 @pytest.mark.api()
 @allure.step('test_144_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/ fee + SF + Edamama & Brand voucher')
 def test_144_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -1990,19 +2802,30 @@ def test_144_DS_SC_item_single_item_multiple_qty_checkout_with_GW_w_fee_SF_Edama
 @pytest.mark.api()
 @allure.step('test_145_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/ fee + SF + Edamama & Brand voucher')
 def test_145_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2011,17 +2834,30 @@ def test_145_DS_SC_item_multiple_items_multiple_qty_checkout_GW_w_fee_SF_Edamama
 @pytest.mark.api()
 @allure.step('test_146_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/o fee + SF + Edamama & Brand voucher')
 def test_146_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2030,19 +2866,30 @@ def test_146_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_SF_Edam
 @pytest.mark.api()
 @allure.step('test_147_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/o fee + SF + Edamama & Brand voucher')
 def test_147_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductQ["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductQ["prodId"], dTestData.tss.scTssScProductQ["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductR["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductR["prodId"], dTestData.tss.scTssScProductR["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand2"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2051,17 +2898,30 @@ def test_147_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_SF_Edamam
 @pytest.mark.api()
 @allure.step('test_148_DS-SC item - single item (multiple quantities per SKU) checkout with GW w/o fee + no SF + Edamama & Brand voucher')
 def test_148_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_no_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Voucher')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2070,19 +2930,30 @@ def test_148_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_no_SF_E
 @pytest.mark.api()
 @allure.step('test_149_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/o fee + no SF + Edamama & Brand voucher')
 def test_149_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_no_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
     intCartItemsLength = apiCart.getCartItemsLength(strToken)
     listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2091,19 +2962,32 @@ def test_149_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_no_SF_Eda
 @pytest.mark.api()
 @allure.step('test_170_DS-SC item - single item (single quantity per SKU) checkout with SF + Brand Sponsored & Referral Code')
 def test_170_DS_SC_item_single_item_single_qty_checkout_with_SF_Brand_Sponsored_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2112,21 +2996,32 @@ def test_170_DS_SC_item_single_item_single_qty_checkout_with_SF_Brand_Sponsored_
 @pytest.mark.api()
 @allure.step('test_171_DS-SC item - multiple items (single quantity per SKU) checkout with SF + Brand Sponsored & Referral Code')
 def test_171_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Brand_Sponsored_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_02)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_02, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2135,19 +3030,32 @@ def test_171_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Brand_Sponsor
 @pytest.mark.api()
 @allure.step('test_172_DS-SC item - single item (single quantity per SKU) checkout without SF + Brand Sponsored & Referral Code')
 def test_172_DS_SC_item_single_item_single_qty_checkout_without_SF_Brand_Sponsored_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_03)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_03, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDP (Product Details Page)')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
+    
+    uCommon.log(0, 'Step 3: Add item to cart')
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 4: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 6: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 7: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
@@ -2156,21 +3064,32 @@ def test_172_DS_SC_item_single_item_single_qty_checkout_without_SF_Brand_Sponsor
 @pytest.mark.api()
 @allure.step('test_173_DS-SC item - multiple items (single quantity per SKU) checkout without SF + Brand Sponsored & Referral Code')
 def test_173_DS_SC_item_multiple_items_single_qty_checkout_without_SF_Brand_Sponsored_Referral_Code():
-    #pre-testing: Delete Registered Account to be re-used
+    uCommon.log(0, 'Pre-Test: Delete Registered Account to be re-used')
     apiManualSignUp.deleteRegisteredAcct(dTestData.rsg.strEmail_04)
     
+    uCommon.log(0, 'Step 1: Sign up and Login')
     strToken = apiManualSignUp.postAndVerifyAndAddAddressToNewSignedUpAcct(dTestData.rsg.strEmail_04, dTestData.rsg.strPassword, dTestData.rsg.strFirstName, dTestData.rsg.strLastName, dTestData.rsg.blnIsPolicyChecked, dTestData.add.addAddress)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
     apiPdp.getPDP(strToken, dTestData.tss.scTssScProductM["listName"])
     strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductM["prodId"], dTestData.tss.scTssScProductM["variantId"], 1)
     strItemId = apiCart.getCartItemDetails(strToken)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
     apiCheckout.updateMany(strToken, strCartId, strItemId)
     apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Apply Vouchers')
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.strReferralCode, dTestData.tss.intPaymentMethod)
     listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 5: Select MOP (Mode Of Payment)')
     apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
     apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Place Order')
     strOrderId = apiPlaceOrder.placeOrderAndGetOrderId(strToken, strCartId)
     apiPlaceOrder.checkout(strToken, strOrderId)
 
