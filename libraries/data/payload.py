@@ -650,6 +650,8 @@ class po:
 
 
 class sc:
+    """SELLER CENTER"""
+    
     def printPackList(strShipmentId, strVendorId):
         return {
               "orderShipmentIds": [
@@ -663,6 +665,8 @@ class sc:
             "shipmentNumber": strShipmentNumber,
             "vendorId": strVendorId
         }
+
+
         
         
 
@@ -670,6 +674,11 @@ class sc:
 
 class ap:
     """ADMIN PANEL"""
+    
+    def mimicCourierBehavior(strStatus):
+        return{
+            "status": strStatus
+        }
     def updateRewardsCap(strMaxPercentCap, strMaxPHPCap):
         return {
             "newRewardsPercentageCap": strMaxPercentCap,
