@@ -14,7 +14,7 @@ def updatePayment(strToken, strCartId, listCouponDetails = "", strBeansType = ""
     """
     if listCouponDetails == "" and strBeansType == "":
         uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePayment(strCartId))
-    elif listCouponDetails == "" and strBeansType == "Reward":
+    elif listCouponDetails == "" and strBeansType == "Reward" or strBeansType == "Credit":
         uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithBeans(strBeansType,strCartId))
     elif listCouponDetails != "" and strBeansType == "":
         uCommon.callPost(dUrl.po.updatePayment, dHeaders.withToken(strToken), dPayload.po.updatePaymentWithCoupon(listCouponDetails,strCartId))

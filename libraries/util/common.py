@@ -60,6 +60,20 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
     assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
     return response
 
+def callPut(strUrl, strHeaders, strPayload = "", strAuth = ""):
+    """
+    Objective: PUT API request
+    
+    Params: strUrl | strHeaders | strParams | strAuth
+    Returns: response
+    Author: abernal_20240610
+    """
+    response = requests.put(f'{dUrl.baseUrl}{strUrl}', headers=strHeaders, json=strPayload, auth=strAuth)
+    statusCode = getStatusCode(response)
+    responseData = getResponseData(response)
+    assert statusCode == 200, f'Post response failed with Status Code: {statusCode} | Message: {responseData["message"]}'
+    return response
+
 def callPostAndValidateResponse(strUrl, strHeaders = '', strPayload = '', strAuth = '', intRetries = 5):
     """
     Objective: POST API request and validate response code
