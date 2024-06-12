@@ -1,6 +1,6 @@
 import libraries.util.common as uCommon
 
-def getAccessTokenSC(response):
+def getAccessTokenAndRefreshTokenSC(response):
     """
     Objective: Get Seller Center access token
         
@@ -10,4 +10,6 @@ def getAccessTokenSC(response):
     """
     responseData = uCommon.getResponseData(response)
     accessToken = responseData['access_token']
-    return accessToken
+    refreshToken = responseData['refresh_token']
+    dictData = {"accessToken": accessToken, "refreshToken": refreshToken}
+    return dictData

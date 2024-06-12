@@ -3106,7 +3106,8 @@ def test_174_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Brand_S
     apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
     
     uCommon.log(0, 'Step 10: Login to Seller Center')
-    strScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+    dictAccessTokens = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+    strScToken = dictAccessTokens['accessToken']
     
     uCommon.log(0, 'Step 11: Search shipment using order number and take note of the shipment details.')
     dictShipmentDetails = apiScShipments.searchAndGetShipmentDetails(strScToken, strOrderNumber, strVendorId)

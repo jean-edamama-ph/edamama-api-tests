@@ -59,5 +59,5 @@ def loginOAuth2(strEmail, strPassword):
         authCode = getAuthCode(redirectUri)
         browser.close()
     response = postOAuth2Token(dUrl.lgn.sc.tokenUrl, authCode, dUrl.lgn.sc.redirectUri, dTestData.lgn.sc.clientID)
-    accessToken = rLoginSC.getAccessTokenSC(response)
-    return accessToken
+    dictData = rLoginSC.getAccessTokenAndRefreshTokenSC(response)
+    return dictData
