@@ -3,6 +3,8 @@ class lgn:
         email = "testkpcmanual+1@gmail.com"
         email_02 = "testkpcmanual+2@gmail.com"
         email_03 = "testkpcmanual+3@gmail.com"
+        email_04 = "testkpcmanual+4@gmail.com"
+        email_05 = "testkpcmanual+5@gmail.com"
         password = "Edamama@123!"
         emailAP = "jean@edamama.ph"
         
@@ -13,8 +15,11 @@ class lgn:
                 """SELLER CENTER"""
                 
                 clientID = '5ho5q2m09pevol3lnc4ev2mpt1'
-                email = 'morgan@edamama.ph'
-                password = 'Happykid123!'
+                authFlow = 'REFRESH_TOKEN_AUTH'
+                #email = 'morgan@edamama.ph'
+                #password = 'Happykid123!'
+                email = 'ignisfox11@gmail.com'
+                password = 'Password1234!'
 
 
 

@@ -5,7 +5,7 @@ import libraries.data.payload as dPayload
 import libraries.util.common as uCommon
 import libraries.util.response.sellerCenter.shipment as rShipment
 
-def getShipments(strToken):
+def getShipments(strToken, strVendorId):
     """
     Method: GET
     API Endpoint: /shipments?
@@ -13,7 +13,7 @@ def getShipments(strToken):
     Response Data: guestToken
     Author: cgrapa_20230801
     """
-    response = uCommon.sc.callGet(dUrl.sc.shipments, dHeaders.withToken(strToken), dParams.sc.shipments)
+    response = uCommon.sc.callGet(dUrl.sc.shipments, dHeaders.withToken(strToken), dParams.sc.shipments(strVendorId))
     return response
 
 def searchShipments(strToken, strOrderNum, strVendorId):
@@ -35,7 +35,7 @@ def searchAndGetShipmentDetails(strToken, strOrderNum, strVendorId):
     Response: response
     Author: jatregenio_20240610
     """
-    response = uCommon.sc.callGet(dUrl.sc.shipments, dHeaders.withToken(strToken), dParams.sc.searchOrderNum(strOrderNum,strVendorId))
+    response = searchShipments(strToken, strOrderNum, strVendorId)
     dictShipmentDetails = rShipment.getShipmentDetails(response)
     return dictShipmentDetails
 
@@ -59,4 +59,15 @@ def patchPrintWayBill(strToken, strShipmentNumber, strVendorId):
     Author: jatregenio_20240610
     """
     response = uCommon.sc.callPatch(dUrl.sc.printWayBill(strShipmentNumber), dHeaders.withToken(strToken), dPayload.sc.printWaybill(strShipmentNumber, strVendorId))
+    return response
+
+def postCognitoIdp(strToken, strClientId, strAuthFlow):
+    """
+    Method: Post cognito idp to gain access in aws
+    API Endpoint: https://cognito-idp.ap-southeast-1.amazonaws.com/
+    Params: strToken | strClientId | strAuthFlow 
+    Response: response
+    Author: jatregenio_20240610
+    """
+    response = uCommon.sc.callPost(dUrl.lgn.sc.cognitoIdpUrl, dHeaders.withToken(strToken), dPayload.sc.cognitoIdp(strToken, strClientId, strAuthFlow))
     return response

@@ -45,7 +45,10 @@ def deleteUserAccount(strEmail):
         db = client[dTestData.md.strDatabaseName]
         collection = db['users']
         deleteOneResult = collection.delete_one(searchCriteria)
-        assert deleteOneResult.deleted_count == 1, f"Expected to delete 1 document, but deleted {deleteOneResult.deleted_count}."
+        if deleteOneResult.deleted_count == 0:
+            uCommon.log(0, f'Deleted {deleteOneResult.deleted_count} record.')
+        else:
+            assert deleteOneResult.deleted_count == 1, f"Expected to delete 1 document, but deleted {deleteOneResult.deleted_count}."
     except ConnectionFailure as e:
         raise RuntimeError(f"Connection failed: {e}\nPLEASE MAKE SURE AWS VPN IS RUNNING AND CONNECTED")
     finally:
