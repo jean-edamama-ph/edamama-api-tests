@@ -4047,8 +4047,65 @@ def test_148_DS_SC_item_single_item_multiple_qty_checkout_with_GW_no_fee_no_SF_E
 
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
+@pytest.mark.thisTest()
 @allure.step('test_149_DS-SC item - multiple items (multiple quantities per SKU) checkout GW w/o fee + no SF + Edamama & Brand voucher')
 def test_149_DS_SC_item_multiple_items_multiple_qty_checkout_GW_no_fee_no_SF_Edamama_Brand_voucher():
+    uCommon.log(0, 'Step 1: Login to edamama')
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    
+    uCommon.log(0, 'Step 3: Add Items')
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
+    
+    uCommon.log(0, 'Step 4: Take note of the numbers of items added')    
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+
+    uCommon.log(0, 'Step 5: Checkout item on cart')
+    apiCheckout.updateMany(strToken, strCartId, listItemId, dTestData.tss.blnYesIsGW)
+    apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 6: Apply Vouchers')
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["scBrand1"], dTestData.tss.intPaymentMethod)
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers["edamama"], dTestData.tss.intPaymentMethod)
+    
+    uCommon.log(0, 'Step 7: Select MOP (Mode Of Payment)')
+    apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
+    apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 8: Place Order')
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails["_id"])
+    strOrderNumber = dictAPPOrderDetails["orderNumber"]
+    #print Order Number for reference when tester needs to manual check
+    print(strOrderNumber)
+    listVendors = getDictOrderData(dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 9: Login to Admin Panel')
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 10: Verify order and shipment details')
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 11: Login to Seller Center')
+    dictScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+
+    uCommon.log(0, 'Steps : Processing Shipments. ')
+    for item in range (len(listVendors)):
+        executeScTestSteps(dictScToken["accessToken"], strAPToken, strOrderNumber, listVendors[item])
+
+    uCommon.log(1, 'TEST PASSED.')
+
+
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test_150_DS-SC item - multiple items (single quantity per SKU) checkout with SF + Brand Sponsored 1 & Brand Sponsored 2')
+def test_150_DS_SC_item_multiple_items_single_qty_checkout_with_SF_Brand_Sponsored_1_Brand_Sponsored_2():
     uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
     
