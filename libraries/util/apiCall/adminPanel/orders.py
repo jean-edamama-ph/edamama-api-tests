@@ -49,13 +49,3 @@ def compareOrderDetails(apResponse, appResponse):
     assert apResponse['platform'] == appResponse['platform'], f'Platform is not the same.'
     assert apResponse['totalQuantity'] == appResponse['totalQuantity'], f'Total Quantity is not the same.'
     assert apResponse['user'] == appResponse['user'], f'User details is not the same.'
-    
-def putRewardsCapping(strToken, strMaxPHPCap, strMaxPercentCap):
-    """
-    Method: GET
-    API Endpoint: /admin/rewardsCapping
-    Payload: newRewardsAmountCap | newRewardsPercentageCap
-    Author: abernal_20240610
-    """
-    response = uCommon.callPut(dUrl.ap.rewardsCap, dHeaders.withToken(strToken), dPayload.ap.updateRewardsCap(strMaxPercentCap, strMaxPHPCap))
-    return response
