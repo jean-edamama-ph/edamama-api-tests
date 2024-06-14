@@ -3,6 +3,8 @@ class lgn:
         email = "testkpcmanual+1@gmail.com"
         email_02 = "testkpcmanual+2@gmail.com"
         email_03 = "testkpcmanual+3@gmail.com"
+        email_04 = "testkpcmanual+4@gmail.com"
+        email_05 = "testkpcmanual+5@gmail.com"
         password = "Edamama@123!"
         emailAP = "jean@edamama.ph"
         
@@ -13,8 +15,11 @@ class lgn:
                 """SELLER CENTER"""
                 
                 clientID = '5ho5q2m09pevol3lnc4ev2mpt1'
-                email = 'morgan@edamama.ph'
-                password = 'Happykid123!'
+                authFlow = 'REFRESH_TOKEN_AUTH'
+                #email = 'morgan@edamama.ph'
+                #password = 'Happykid123!'
+                email = 'ignisfox11@gmail.com'
+                password = 'Password1234!'
 
 
 
@@ -482,6 +487,39 @@ class tss:
                 "prodId": "664abc3486fce3d2021271cd",
                 "variantId": "664abc478206beb7c2c1321d"
         }
+        scTssScProductAA= {
+                "listName": "tss-sc-product-aa-1718255019555",
+                "prodId": "666a7dab87b2314f6a09805c",
+                "variantId": "666a7df9919cd84e18c1a47d"
+        }
+        scTssScProductBB= {
+                "listName": "tss-sc-product-bb-1718255161504",
+                "prodId": "666a7e3a7f1ff89a7615ae32",
+                "variantId": "666a7e4dcfed9f919b61431f"
+        }
+        scTssScProductCC= {
+                "listName": "tss-sc-product-cc-1718255234315",
+                "prodId": "666a7e82cfed9f919b61438b",
+                "variantId": "666a7e917f1ff89a7615aec4"
+        }
+        scTssScProductDD= {
+                "listName": "tss-sc-product-dd-1718255319737",
+                "prodId": "666a7ed758924dea73473548",
+                "variantId": "666a7ee458924dea73473dd2"
+        }
+        scTssScProductEE= {
+                "listName": "tss-sc-product-1718255433179",
+                "prodId": "666a7f4958924dea7347578e",
+                "variantId": "666a7f5758924dea734757a7"
+        }
+        scTssScProductFF= {
+                "listName": "tss-sc-product-1718255433179",
+                "prodId": "666a7f4958924dea7347578e",
+                "variantId": "666a7f5758924dea734757a7"
+        }
+        
+
+
 
 
 class ap:
