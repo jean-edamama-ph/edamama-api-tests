@@ -4911,3 +4911,153 @@ def test_174_DS_SC_item_single_item_single_qty_checkout_with_GW_w_fee_SF_Brand_S
         executeScTestSteps(dictScToken["accessToken"], strAPToken, strOrderNumber, listVendors[item])
     
     uCommon.log(1, 'TEST PASSED.')
+    
+    
+@pytest.mark.tssDSSC()
+@pytest.mark.api()
+@allure.step('test-190-DS-SC item - single item (single quantity per SKU) checkout with SF + Gift Card 1 & Gift Card 2')
+def test_190_ds_sc_item_single_item_single_qty_checkout_with_SF_plus_Gift_Card_1_and_Gift_Card_2():
+
+    uCommon.log(0, 'Step 1: Login to edamama')
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard1'], dTestData.tss.intPaymentMethod)
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard2'], dTestData.tss.intPaymentMethod)
+    apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
+    apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    strOrderNumber = dictAPPOrderDetails["orderNumber"]
+    #print Order Number for reference when tester needs to manual check
+    print(strOrderNumber)
+    listVendors = getDictOrderData(dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 8: Login to Seller Center')
+    dictScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+
+    uCommon.log(0, 'Step 9: Processing Shipments. ')
+    for item in range (len(listVendors)):
+        executeScTestSteps(dictScToken["accessToken"], strAPToken, strOrderNumber, listVendors[item])
+        
+    uCommon.log(1, 'TEST PASSED.')
+        
+
+@pytest.mark.tssDCC()
+@pytest.mark.api()
+@allure.step('test-191-DS-SC item - multiple items (single quantity per SKU) checkout with SF + Gift Card 1 & Gift Card 2')
+def test_191_ds_sc_item_multiple_item_single_qty_checkout_with_sf_plus_Gift_Card_1_and_Gift_Card_2():
+    uCommon.log(0, 'Step 1: Login to edamama')
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 1)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 1)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard1'], dTestData.tss.intPaymentMethod)
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard2'], dTestData.tss.intPaymentMethod)
+    apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
+    apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    strOrderNumber = dictAPPOrderDetails["orderNumber"]
+    #print Order Number for reference when tester needs to manual check
+    print(strOrderNumber)
+    listVendors = getDictOrderData(dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 8: Login to Seller Center')
+    dictScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+
+    uCommon.log(0, 'Steps 9: Processing Shipments. ')
+    for item in range (len(listVendors)):
+        executeScTestSteps(dictScToken["accessToken"], strAPToken, strOrderNumber, listVendors[item])
+        
+    uCommon.log(1, 'TEST PASSED.')
+
+
+
+@pytest.mark.tssDSCC()
+@pytest.mark.api()
+@allure.step('test-201-DS-SC item - multiple items (multiple quantities per SKU) checkout with SF + Gift Card 1 & Gift Card 2')
+def test_201_ds_sc_item_multiple_item_multiple_qty_checkout_with_SF_plus_Gift_Card_1_and_Gift_Card_2():
+    uCommon.log(0, 'Step 1: Login to edamama')
+    strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 2: Visit PDPs (Product Details Page) and items to cart')
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductN["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductN["prodId"], dTestData.tss.scTssScProductN["variantId"], 2)
+    apiPdp.getPDP(strToken, dTestData.tss.scTssScProductO["listName"])
+    strCartId = apiCart.addToCartAndGetCartId(strToken, dTestData.tss.scTssScProductO["prodId"], dTestData.tss.scTssScProductO["variantId"], 2)
+    intCartItemsLength = apiCart.getCartItemsLength(strToken)
+    listItemId = apiCart.getCartItemDetails(strToken, intCartItemsLength)
+    
+    uCommon.log(0, 'Step 3: Checkout item on cart')
+    apiCheckout.updateMany(strToken, strCartId, listItemId)
+    apiCheckout.getCart(strToken)
+    
+    uCommon.log(0, 'Step 4: Select MOP (Mode Of Payment)')
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard1'], dTestData.tss.intPaymentMethod)
+    listCouponDetails = apiCheckout.applyVoucherAndgetCouponListDetails(strToken, strCartId, dTestData.tss.vouchers['giftCard2'], dTestData.tss.intPaymentMethod)
+    apiPlaceOrder.updatePayment(strToken, strCartId, listCouponDetails)
+    apiPlaceOrder.getCart(strToken)
+    
+    uCommon.log(0, 'Step 5: Place Order')
+    dictAPPOrderDetails = apiPlaceOrder.placeOrderAndGetOrderDetails(strToken, strCartId)
+    apiPlaceOrder.checkout(strToken, dictAPPOrderDetails['_id'])
+    strOrderNumber = dictAPPOrderDetails["orderNumber"]
+    #print Order Number for reference when tester needs to manual check
+    print(strOrderNumber)
+    listVendors = getDictOrderData(dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 6: Login to Admin Panel')
+    strAPToken = apiManualLogin.postAPUserLogin(dTestData.lgn.emailAP, dTestData.lgn.password)
+    
+    uCommon.log(0, 'Step 7: Verify shipment details')
+    dictAPOrderDetails = apiApOrders.getAPOrderAndDetails(strAPToken, dictAPPOrderDetails['orderNumber'])
+    apiApOrders.compareOrderDetails(dictAPOrderDetails, dictAPPOrderDetails)
+    
+    uCommon.log(0, 'Step 8: Login to Seller Center')
+    dictScToken = apiScLogin.loginOAuth2(dTestData.lgn.sc.email, dTestData.lgn.sc.password)
+
+    uCommon.log(0, 'Steps 9: Processing Shipments. ')
+    for item in range (len(listVendors)):
+        executeScTestSteps(dictScToken["accessToken"], strAPToken, strOrderNumber, listVendors[item])
+        
+    uCommon.log(1, 'TEST PASSED.')
