@@ -7852,7 +7852,7 @@ def test_197_ds_sc_item_multiple_item_single_qty_checkout_with_GW_without_fee_pl
 @pytest.mark.tssDSSC()
 @pytest.mark.api()
 @allure.step('test-198-DS-SC item-single-item-single-qty-checkout-with-GW w/o fee + no SF + Gift Card 1 & Gift Card 2')
-def test_199_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus_no_SF_plus_Gift_Card_1_and_Gift_Card_2():
+def test_198_ds_sc_item_single_item_single_qty_checkout_with_GW_without_fee_plus_no_SF_plus_Gift_Card_1_and_Gift_Card_2():
     uCommon.log(0, 'Step 1: Login to edamama')
     strToken = apiManualLogin.postUserLogin(dTestData.lgn.email_03, dTestData.lgn.password)
 
