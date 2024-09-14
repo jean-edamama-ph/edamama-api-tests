@@ -51,7 +51,7 @@ def loginOAuth2(strEmail, strPassword):
     Author: cgrapa_20240605
     """
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         authUrl = f'{dUrl.lgn.sc.authBaseUrl}?response_type=code&client_id={dTestData.lgn.sc.clientID}&redirect_uri={dUrl.lgn.sc.redirectUri}'
         page.goto(authUrl)

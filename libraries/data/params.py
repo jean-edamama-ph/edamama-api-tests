@@ -26,7 +26,14 @@ class sc:
                 "search": strOrderId,
                 "vendorId": strVendorId
         }
-
+    
+    def searchAllOrderNum (strOrderId, strVendorId):
+        return {
+                "limit": 1,
+                "page": 1,
+                "search": strOrderId,
+                "vendorId": strVendorId
+        }
 
 
 

@@ -62,7 +62,7 @@ def callPost(strUrl, strHeaders, strPayload = "", strAuth = ""):
 
 def callPatch(strUrl, strHeaders, strPayload = "", strAuth = ""):
     """
-    Objective: POST API request
+    Objective: PATCH API request
     
     Params: strUrl | strHeaders | strPayload | strAuth
     Returns: response
@@ -293,7 +293,8 @@ def countCharacterChange(strCompareWith, strCompareTo):
     return count
 
 def prettyPrint(dictData):
-    return pprint.pprint(dictData)
+    pp = pprint.PrettyPrinter(sort_dicts=False)
+    return pp.pprint(dictData)
 
 def generateMongoDbConnectionString(strFilePath,strConnectionStringScheme):
     strPemFilePath = strFilePath.replace('\\', '%5C').replace(':', '%3A').replace(' ', '+')
@@ -337,7 +338,21 @@ def log(intStatus, strMsg):
     # logging.warning(msg=f'{strStatus} {strMsg}')
     logging.info(msg=f'{strStatus} | {strMsg}')
 
+def validateValues(strToCompare, strToCompareWith, strMsg = '', blnExact = True):
+    """
+    Objective: Compares 2 sets of values
+    
+    Params: strToCompare | strToCompareWith | strMsg | blnExact
+    Returns: None
+    Author: cgrapa_20240619
+    """
+    if strMsg == '':
+        strMsg = f'Value of "{strToCompare}" is not equal to "{strToCompareWith}".'
 
+    if blnExact == True:
+        assert strToCompare == strToCompareWith, strMsg
+    else:
+        assert strToCompare.casefold() == strToCompareWith.casefold(), strMsg
 
 
 

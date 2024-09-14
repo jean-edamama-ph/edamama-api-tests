@@ -27,6 +27,17 @@ def searchShipments(strToken, strOrderNum, strVendorId):
     response = uCommon.sc.callGet(dUrl.sc.shipments, dHeaders.withToken(strToken), dParams.sc.searchOrderNum(strOrderNum,strVendorId))
     return response
 
+def searchAllShipments(strToken, strOrderNum, strVendorId):
+    """
+    Method: GET
+    API Endpoint: /shipments?
+    Params: limit | page | generalStatus | orderNumber | vendorId
+    Response: response
+    Author: jatregenio_20240610
+    """
+    response = uCommon.sc.callGet(dUrl.sc.shipments, dHeaders.withToken(strToken), dParams.sc.searchAllOrderNum(strOrderNum,strVendorId))
+    return response
+
 def searchAndGetShipmentDetails(strToken, strOrderNum, strVendorId):
     """
     Method: GET
@@ -37,6 +48,18 @@ def searchAndGetShipmentDetails(strToken, strOrderNum, strVendorId):
     """
     response = searchShipments(strToken, strOrderNum, strVendorId)
     dictShipmentDetails = rShipment.getShipmentDetails(response)
+    return dictShipmentDetails
+
+def searchAllAndGetShipmentDetails(strToken, strOrderNum, strVendorId):
+    """
+    Method: GET
+    API Endpoint: /shipments?
+    Params: limit | page | generalStatus | orderNumber | vendorId
+    Response: response
+    Author: ccgrapa_20240701
+    """
+    response = searchAllShipments(strToken, strOrderNum, strVendorId)
+    dictShipmentDetails = rShipment.getOrderDetailsAndStatus(response)
     return dictShipmentDetails
 
 def patchPrintPacklist(strToken, strShipmentId, strVendorId):

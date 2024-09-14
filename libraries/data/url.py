@@ -105,6 +105,12 @@ class ap:
     def print(strShipmentNum):
         return f'/shipments/{strShipmentNum}/print?'
     rewardsCap = '/admin/rewardsCapping'
+    
+    def sellerOrders(strOrderId):
+        return f'/seller-orders/{strOrderId}'
+    
+    def orders(strOrderId):
+        return f'/orders/{strOrderId}'
 
 
 

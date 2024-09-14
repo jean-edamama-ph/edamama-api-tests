@@ -1,9 +1,7 @@
 import libraries.data.headers as dHeaders
-import libraries.data.payload as dPayload
 import libraries.data.url as dUrl
 import libraries.util.common as uCommon
 import libraries.util.response.placeOrder as rPlaceOrder
-import libraries.util.response.adminPanel.shipments as rApShipments
 
 def getAPOrder(strToken, strOrderNumber):
     """
@@ -35,17 +33,17 @@ def compareOrderDetails(apResponse, appResponse):
     Returns: None
     Author: abernal_20240606
     """
-    assert apResponse['_id'] == appResponse['_id'], f'Order ID is not the same.'
-    assert apResponse['orderNumber'] == appResponse['orderNumber'], f'Order number is not the same.'
-    assert apResponse['createdAt'] == appResponse['createdAt'], f'Time created is not the same.'
-    assert apResponse['deliveryAddress'] == appResponse['deliveryAddress'], f'Delivery address is not the same.'
-    assert apResponse['billingAddress'] == appResponse['billingAddress'], f'Billing address is not the same.'
-    #assert apResponse['finalStatus'] == appResponse['finalStatus'], f'Final status is not the same.'
-    assert apResponse['giftInstructions'] == appResponse['giftInstructions'], f'Gift Instructions is not the same.'
-    assert apResponse['noOfItems'] == appResponse['noOfItems'], f'Number of items are not the same.'
-    assert apResponse['hasLootBag'] == appResponse['hasLootBag'], f'Has Loot Bag is not the same.'
-    assert apResponse['orderSummary'] == appResponse['orderSummary'], f'Order Summary is not the same.'
-    assert apResponse['paymentMethod'] == appResponse['paymentMethod'], f'Payment Method is not the same.'
-    assert apResponse['platform'] == appResponse['platform'], f'Platform is not the same.'
-    assert apResponse['totalQuantity'] == appResponse['totalQuantity'], f'Total Quantity is not the same.'
-    assert apResponse['user'] == appResponse['user'], f'User details is not the same.'
+    uCommon.validateValues(apResponse['_id'], appResponse['_id'], f'Order ID is not the same.')
+    uCommon.validateValues(apResponse['orderNumber'], appResponse['orderNumber'], f'Order number is not the same.')
+    uCommon.validateValues(apResponse['createdAt'], appResponse['createdAt'], f'Time created is not the same.')
+    uCommon.validateValues(apResponse['deliveryAddress'], appResponse['deliveryAddress'], f'Delivery address is not the same.')
+    uCommon.validateValues(apResponse['billingAddress'], appResponse['billingAddress'], f'Billing address is not the same.')
+    #uCommon.validateValues(apResponse['finalStatus'], appResponse['finalStatus'], f'Final status is not the same.')
+    uCommon.validateValues(apResponse['giftInstructions'], appResponse['giftInstructions'], f'Gift Instructions is not the same.')
+    uCommon.validateValues(apResponse['noOfItems'], appResponse['noOfItems'], f'Number of items are not the same.')
+    uCommon.validateValues(apResponse['hasLootBag'], appResponse['hasLootBag'], f'Has Loot Bag is not the same.')
+    uCommon.validateValues(apResponse['orderSummary'], appResponse['orderSummary'], f'Order Summary is not the same.')
+    uCommon.validateValues(apResponse['paymentMethod'], appResponse['paymentMethod'], f'Payment Method is not the same.')
+    uCommon.validateValues(apResponse['platform'], appResponse['platform'], f'Platform is not the same.')
+    uCommon.validateValues(apResponse['totalQuantity'], appResponse['totalQuantity'], f'Total Quantity is not the same.')
+    uCommon.validateValues(apResponse['user'], appResponse['user'], f'User details is not the same.')
